@@ -131,7 +131,84 @@ I když se dá interagovat s uživatelkami přímo v prohlížeči, existuje cel
 V takových případech je lepší zvolit cestu interakce na straně serveru - vyvstává však otázka, jak dostaneme data z prohlížeče na server?
 
 Dostat data z prohlížeče můžeme několika způsoby:
-* HTTP metoda `POST`
-* * skrze HTML form 
-* * skrze JavaScript
+* HTTP metoda `POST` - užití HTML elementu `<form>`
 * websockets
+
+### HTML form
+
+`<form>` je HTML element, který slouží k vytvoření formuláře, do kterého uživatelka zadává data.
+Známe jej například ze situací, kdy zadáváme username a password, případně když v eshopu zadáváme adresu, jméno atd.
+Element `<form>` je určitou obálkou, která dále obsahuje `<input>` elementy, které můžou představovat textové vstupy, ale také tlačítka, multiple-choice checkboxy, one-choice "radio"boxy, slidery, výběr souboru, barvy a mnoho dalších.
+Kompletní přehled všech dostupných `<input>` elementů je k přečtení například na [W3Schools.com: HTML Input Types](https://www.w3schools.com/html/html_form_input_types.asp).
+
+Základní formulář <form> se vstupem pro jméno a potvrzovacím tlačítkem může vypadat například takto:
+
+```html
+<form action="/enterdata">
+  <input type="text" name="name" value="Moje jméno"><br>
+  <input type="text" name="mail" value="Můj mail"><br>
+  <input type="submit" value="Text na tlačítku">
+</form>
+```
+
+Tento formulář definuje jeden textový vstup (`type="text"`) pojmenovaný "name" (`name="name"`) pro jméno, druhý textový vstup "mail" pro email, a jedno tlačítko (`type="submit"`) pro odeslání formuláře.
+Element `<form>` definuje parametr `action`, který určuje, na jakou adresu bude uživatel přesměrován po odeslání formuláře.
+
+#### <form> s GET requestem
+
+Ve výše uvedeném případě bude formulář odeslán na adresu `/enterdata` a to ve formě `GET` requestu, který je pro `<form>` defaultní.
+Data se na tuto adresu odešlou jako tzv. (Query string)[https://en.wikipedia.org/wiki/Query_string] - určitý textový dovětek adresy, který nese data a začíná otazníkem, za nímž následují dvojice `názevparametru=hodnotaparametru` oddělené znakem AND.
+
+URL, na kterou bude uživatel přesměrován po odeslání formuláře tak může vypadat například takto: `/enterdata?name=MyAwesomeName&mail=mymail@mygmail.com`. 
+Určitou nevýhodou tohoto řešení je, že zadaná data jsou viditelná v adrese prohlížeče - úplně se to tak nehodí pro zadávání citlivých dat.
+
+##### Zpracování Query Stringu v Tornadu
+
+Pro zpracování zadaných dat potřebujeme mít na adrese `/enterdata` request handler s get metodou, která by uživatelská data zpracovala.
+Jde o klasický request handler s metodou GET, který jsme již několikrát napsali.
+Jediné, co uděláme navíc je to, že pro získání hodnot parametrů z Query Stringu, použijeme metodu `get_argument()` zděděnou z třídy `tornado.web.RequestHandler`:
+
+```python
+#v makeApp máme nastaveno: (r"/enterdata", EnterDataHandler),
+class EnterDataHandler(tornado.web.RequestHandler):
+    def get(self):
+        name = self.get_argument("name") #ziskame parametr name z query stringu
+        mail = self.get_argument("mail") #ziskame parametr mail z query stringu
+
+        #ziskana data pouzijeme (v tomto pripade jen vypisem na stranku)
+        self.write("vase jmeno="+name+" a vas mail:"+mail)
+```
+
+#### <form> s POST requestem
+
+Element `<form>` je možné také odeslat za použití http metody POST.
+Výhodou takového řešení je:
+1. odeslaná data se nezobrazují ve výsledné URL adrese
+2. nemusíme přesměrovávat, můžeme zůstat na stejné adrese
+3. stačí jeden handler: metoda get zobrazuje HTML s formulářem, metoda POST šéfuje zpracování dat.
+
+Pokud chceme odesílat formulář pomocí POST requestu, přidáme do elementu `<form>` parametr method s hodnotou "post":
+
+```html
+<form action="/enterdata" method="post">
+  <input type="text" name="name" value="Moje jméno"><br>
+  <input type="text" name="mail" value="Můj mail"><br>
+  <input type="submit" value="Text na tlačítku">
+</form>
+```
+
+#### Zpracování POST requestu v Tornadu
+
+```python
+#v makeApp máme nastaveno: (r"/enterdata", EnterDataHandler),
+class EnterDataHandler(tornado.web.RequestHandler):
+    def post(self): #chceme reagovat na POST request, tedy pouzivame POST metodu
+        name = self.get_argument("name") #ziskame parametr name z query stringu
+        mail = self.get_argument("mail") #ziskame parametr mail z query stringu
+
+        #zde treba zapiseme hodnoty do databaze
+        print("quazi fake zapis do databaze:", name, mail)
+        
+        #nakonec presmerujeme na nejakou dalsi stranku - neco jako dekujeme za vase data atd...
+        return self.redirect("/danke")
+```
