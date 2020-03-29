@@ -7,7 +7,7 @@ Pokud chceme, aby náš web interagoval na uživatele a uživatelky, máme dvě 
 
 Obě řešení přitom mají svá pro a proti a velká část úvah, plánování a realizace interakce s uživatelem je právě otázkou volby mezi prolížečem a serverem.
 
-## Interakce v prohlížeči
+## Interakce na straně uživatele (v prohlížeči)
 Spousta interakcí je přítomná z důvodu UI (user interface) nebo UX (user experience) designu, jde o otevírající se meníčka, blikající tlačítka a podobné, u kterých není tak úplně třeba, aby o nich webový server vůbec věděl.
 Takové interakce je ideální nechat na straně uživatelky - tedy v jejím webovém prohlížeči.
 Pokud se tak rozhodneme, použijeme k programování JavaScript - jazyk, který je obsažen v ~99% všech webových prohlížečů a který umožňuje pracovat jak s HTML, tak CSS prvky webové stránky, tak i s akcemi uživatelek (klik, potažení myši, vstup klávesnice).
@@ -197,7 +197,7 @@ Pokud chceme odesílat formulář pomocí POST requestu, přidáme do elementu `
 </form>
 ```
 
-#### Zpracování POST requestu v Tornadu
+##### Zpracování POST requestu v Tornadu
 
 ```python
 #v makeApp máme nastaveno: (r"/enterdata", EnterDataHandler),
@@ -212,3 +212,9 @@ class EnterDataHandler(tornado.web.RequestHandler):
         #nakonec presmerujeme na nejakou dalsi stranku - neco jako dekujeme za vase data atd...
         return self.redirect("/danke")
 ```
+
+### Examples
+
+- přijímání dat pomocí metody GET: `examples/get-method`
+- přijímání dat pomocí metody POST: `examples/post-method`
+- přijímání dat pomocí metody POST na jedné adrese a handleru - GET zobrazuje formular, POST prijima data: `examples/post-in-one-handler`
