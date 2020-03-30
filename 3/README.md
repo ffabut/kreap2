@@ -1,14 +1,12 @@
-# Lekce 3
+# Lekce 3: Templaty v Tornado Webserver
 
-## Pokročilejší techniky v modulu Tornado Webserver
-
-### Templates - jak generovat "pěknou" stránku
+## Templates - jak generovat "pěknou" stránku
 
 V minulé hodině jsme v RequestHandleru ke generování odpovědi-stránky používali metodu `write()` zděděnou z třídy `tornado.web.RequestHandler`.
 Tato metoda je spíš jen základní a hodí se jen v začátku, případně pro debugování - výpis jednoduchých hodnot.
 Pokud ale chceme generovat plnohodnotnější koukatelnou stránku, pak je lepší použít spíše metodu `render()`.
 
-#### Metoda render() - renderování templatů
+### Metoda render() - renderování templatů
 
 Metoda `render()` umožňuje vložit proměnné do předlohového templatu a ten poté vrátit jako výslednou stránku.
 Template je přitom defacto hotová HTML stránka, v níž se však vyskytují pasáže označující místa, do kterých se mají vkládat proměnné.
@@ -16,7 +14,7 @@ Jméno templatu předáváme jako atribut metodě render(), tedy například: `r
 Tyto označující pasáže mají formát názvu proměnné ohraničené z obou stran dvě složenými závorkami, například: `{{jmeno}}` nebo `{{pozdrav}}`.
 Předáme-li poté metodě `render()` atributy pojmenované jako `jmeno` a `pozdrav`, například takto: `render("myTemplate.html", jmeno="Nikola", pozdrav=osloveni)`, pak metoda `render()` nahradí `{{jmeno}}` a `{{pozdrav}}` námi dodanými řetězci.
 
-##### Vytvoření templatu
+#### Vytvoření templatu
 
 Před tím než začneme používat metodu render(), musíme připravit template.
 Jeho umístění je defaultně ve stejné složce jako je náš soubor `main.py`.
@@ -40,7 +38,7 @@ Příklad (HTML template `helloPage.html`):
 </html>
 ```
 
-#### Renderování templatu
+### Renderování templatu
 
 Pro vyrenderování templatu stačí v některém z RequestHandlerů nahradit používanou metodu `write()` za `render()` a jako parametry této metody dodat název templatu a všechny proměné používané v tomto templatu. 
 Pro výše uvedený příklad templatu `helloPage.html` by to vypadalo takto:
@@ -68,7 +66,7 @@ Při požadavku na stránku IndexHandler zavolá metodu `render()`, která do te
 </html>
 ```
 
-##### Jiné umístění templates
+#### Jiné umístění templates
 
 V praxi se můžeme dostat k tomu, že budeme používat více než jeden template - může jich být řádově desítky.
 Jejich umístění vedle `main.py` by v takové situaci mohlo být poněkud zmatečné - Tornado proto umožňuje zvolit jiné umístění templatů.
@@ -93,7 +91,7 @@ Templaty bude Tornado potom hledat ve složce `templates`, která je ve stejné 
 Templaty tak elegantně uklidíme do vlastní složky a udržíme náš projekt více přehledný.
 
 
-#### Programování v templatu - control statements
+### Programování v templatu - control statements
 
 Template nám v Tornadu neumožňuje pouze nahrazování značek `{{znacka}}` za hodnoty proměnných, ale i vykonávání python kódu přímo v HTML templatu.
 V templatech můžeme používat if, for, while, and try.
