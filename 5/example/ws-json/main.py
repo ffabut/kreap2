@@ -1,8 +1,11 @@
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
+from tornado.escape import json_encode
+# importujeme funkci json_encode, kterou nabizi tornado v modulu escape
 
-#example hello world pro websocket komunikaci
+# toto je ukázka jak přes Websocket pomocí json_encode() posílat slovník
+# a v JS jej poté dekódovat zpět na slovník a použít
 
 class MainHandler(tornado.web.RequestHandler):
     """
@@ -16,11 +19,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler): # pozor neimportujem
     WebSocketHandler obstarava Websocket komunikaci na adrese /websocket
     """
     def open(self): #vola se pri otevreni komunikace / pripojeni prohlizece
-        print("WebSocket opened")
+        zprava = {u"name": u"server", u"message": u"Vítáme vás na chatu!", u"time": u"nyní"}
+        #prevedeme slovnik zprava do json pomoci funkce json_encode(), kterou jsme importovali z tornado.escape
+        encoded_zprava = json_encode(zprava)
+        self.write_message(encoded_zprava) # odesleme zpravu/slovnik zakodovanou jako JSON pres websocket
 
     def on_message(self, message): #pri prichodu nove zpravy
-        self.write_message(u"You said: " + message) # odesilame zpravu pres websocket
-        # write_message očekává unicode string, proto je před uvozovkami písmeno u: u"retezec"
+        zprava = {u"name": u"Ondřej", u"message": u"Ahoj lidi!", u"time": u"9:18"}
+        #prevedeme slovnik zprava do json pomoci funkce json_encode(), kterou jsme importovali z tornado.escape
+        encoded_zprava = json_encode(zprava)
+        self.write_message(encoded_zprava) # odesleme zpravu/slovnik zakodovanou jako JSON pres websocket
 
     def on_close(self): #pri uzavreni komunikace / odpojeni prohlizece
         print("WebSocket closed")

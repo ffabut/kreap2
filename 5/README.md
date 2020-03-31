@@ -181,6 +181,78 @@ if __name__ == "__main__":
 
 ## Websocket: posílání složitějších dat
 
+Websocket umožňuje přenášet buď textové řetězce, anebo binární data (vhodné pro přenos opravdu větších objemů dat).
+To je ale poněkud limitující, přecijen ke zprávě by bylo dobré dodat třeba kdo ji poslal, kdy, atd.
+Na to se ideálně hodí slovník. Takže co budeme dělat, pokud chceme přenést slovník, anebo třeba seznam?
+V takové situaci je ideální slovník nebo seznam zakódovat do JSONu (JavaScriptový formát pro strukturování dat v řetězcích), tento JSON odeslat jako text a později jej v JavaScriptu dekódovat a získat tak hodnoty obsažené ve slovníku anebo seznamu.
 
+### Co je JSON
+
+JSON neboli JavaScript Object Notation (JavaScriptový objektový zápis) je formát zápisu dat ve formě textu, který je nezávislý na platformě.
+Umí tedy pracovat jak v nativním JavaScriptu, tak má podporu v Pythonu (i přímo v Tornadu), ale taky napříkla v jazyce Go, C++ a mnoha dalších.
+Je to takový švýcarský nůž pro přenos datových objektů mezi různými jazyky.
+Má i své alternativy jako třeba `YAML` (v něm jde vkládat komentáře).
+
+Slovník v JSON může vypadat třeba takto:
+
+```json
+{
+"name":"John",
+"age":30,
+"city": "London"
+} 
+```
+
+A slovník obsahující seznam (prázdný i plný) třeba takto:
+
+```json
+{
+"name":"John",
+"age":30,
+"city": "London",
+"cars":[],
+"bikes": ["Favorit", "Whyte", "SubRosa"]
+} 
+```
+
+Stejně tak může být JSON zkrácen na jeden řádek, je to jedno zda obsahuje entery a odsazení nebo nikoliv:
+
+```json
+{"name":"John","age":30,"city": "London","cars":[],"bikes":["Favorit","Whyte","SubRosa"]} 
+```
+
+JSON je relativně komplexní téma samo o sobě, tyto příklady jsou spíše pro představu o tom, do jakého formátu zhruba budeme kódovat a dekódovat.
+Nemusí nás to ale moc zajímat - do JSONu zakóduje Tornado a zpět dekóduje JavaScript, JSONu si tedy vlastně ani nemáme jak všimnout...
+
+
+### Použití JSON v Tornadu
+
+Tornado pro práci s JSONem nabízí modul `tornado.encode`, v němž je obsažená funkce `json_encode` pro zakódování do JSONu.
+Prvně naimportujeme tuto funkci do Tornada: `from tornado.escape import json_encode`.
+A poté můžeme odesílat slovníky nebo seznamy jako JSON následujícím způsobem:
+
+```python
+def open(self): #vola se pri otevreni komunikace / pripojeni prohlizece
+   zprava = {u"name": u"server", u"message": u"Vítáme vás na chatu!", u"time": u"nyní"}
+   #prevedeme slovnik zprava do json pomoci funkce json_encode(), kterou jsme importovali z tornado.escape
+   encoded_zprava = json_encode(zprava)
+   self.write_message(encoded_zprava) # odesleme zpravu/slovnik zakodovanou jako JSON pres websocket
+```
+
+Dekódování: TODO
+
+### JSON v JavaScriptu
+
+JSON je v JavaScriptu jako doma - je to formát spjatý s JavaScriptem, jeho použití je tedy velmi jednoduché.
+Stačí přijatou zprávu ve formátu JSON dekódovat do objektu, z něhož potom můžeme dostat jednotlivé hodnoty, například takto:
+
+```javascript
+ws.onmessage = function(event) {
+   var obj = JSON.parse(event.data); //dekodujeme JSON data do promene obj
+
+   //potom jiz můžeme pristupovat k jednotlivým hodnotám v tomto objektu jako by to byl slovnik nebo seznam - dle toho, co jsme odeslali
+   alert("uživatel(ka) " + obj["name"] + " napsal(a) v " + obj["time"] + ": " + obj["message"])
+};
+```
 
 
