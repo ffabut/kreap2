@@ -169,7 +169,7 @@ Jde o klasický request handler s metodou GET, který jsme již několikrát nap
 Jediné, co uděláme navíc je to, že pro získání hodnot parametrů z Query Stringu, použijeme metodu `get_argument()` zděděnou z třídy `tornado.web.RequestHandler`:
 
 ```python
-#v makeApp máme nastaveno: (r"/enterdata", EnterDataHandler),
+#v make_app máme nastaveno: (r"/enterdata", EnterDataHandler)
 class EnterDataHandler(tornado.web.RequestHandler):
     def get(self):
         name = self.get_argument("name") #ziskame parametr name z query stringu
