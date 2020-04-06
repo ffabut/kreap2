@@ -225,23 +225,22 @@ JSON je relativně komplexní téma samo o sobě, tyto příklady jsou spíše p
 Nemusí nás to ale moc zajímat - do JSONu zakóduje Tornado a zpět dekóduje JavaScript, JSONu si tedy vlastně ani nemáme jak všimnout...
 
 
-### Použití JSON v Tornadu
+### Použití JSON: Tornado -> JavaScript
 
-Tornado pro práci s JSONem nabízí modul `tornado.encode`, v němž je obsažená funkce `json_encode` pro zakódování do JSONu.
+#### Posílání JSON z Tornada
+Tornado pro práci s JSONem nabízí modul `tornado.escape`, v němž je obsažená funkce `json_encode()` pro zakódování do JSONu.
 Prvně naimportujeme tuto funkci do Tornada: `from tornado.escape import json_encode`.
 A poté můžeme odesílat slovníky nebo seznamy jako JSON následujícím způsobem:
 
 ```python
-def open(self): #vola se pri otevreni komunikace / pripojeni prohlizece
+def on_message(self, message): #vola se pri otevreni komunikace / pripojeni prohlizece
    zprava = {u"name": u"server", u"message": u"Vítáme vás na chatu!", u"time": u"nyní"}
    #prevedeme slovnik zprava do json pomoci funkce json_encode(), kterou jsme importovali z tornado.escape
    encoded_zprava = json_encode(zprava)
    self.write_message(encoded_zprava) # odesleme zpravu/slovnik zakodovanou jako JSON pres websocket
 ```
 
-Dekódování: TODO
-
-### JSON v JavaScriptu
+#### Přijímání JSON v JavaScriptu
 
 JSON je v JavaScriptu jako doma - je to formát spjatý s JavaScriptem, jeho použití je tedy velmi jednoduché.
 Stačí přijatou zprávu ve formátu JSON dekódovat do objektu, z něhož potom můžeme dostat jednotlivé hodnoty, například takto:
@@ -255,4 +254,51 @@ ws.onmessage = function(event) {
 };
 ```
 
+### Použití JSON: JavaScript -> Tornado
 
+Samozřejmě můžeme také posílat zprávy ve formátu JSON z JavaScriptu a přijímat je v Tornado serveru.
+
+#### Posílání JSON z JavaScriptu
+
+Pro posílání zpráv ve formátu JSON z JS můžeme použít funkci `JSON.stringify()`.
+Ta přijímá jako argument slovník, pole či jiné objekty a převede je do JSON řetězce, který můžeme poslat.
+Užití je následující:
+
+```javascript
+ws.onopen = function() {
+   //vytvorime slovnik predstavujici zpravu (kdo, co)
+   hello = {"message": "Hello Server!", "name": "client (browser)", "time": "16:15"}
+   
+   //slovnik prevadime do JSON retezce pomoci funkce JSON.stringify()
+   message = JSON.stringify(hello)
+   ws.send(message); //odesleme retezec ve formatu JSON
+};
+```
+
+#### Přijímání JSON v Tornadu
+
+Pro přijímání JSON zpráv v Tornadu tyto zprávy jednodušeme jen dekódujeme pomocí funkce `json_decode()`, jež je taktéž součástí modulu `tornado.escape`:
+
+```python
+from tornado.escape import json_encode, json_decode
+
+#...
+
+def on_message(self, message):
+   decoded = json_decode(message) #prichozi zpravu ve formatu JSON dekodujeme
+
+   #k prvkum poslaneho slovniku pak uz muzeme normalne pristupovat
+   #jako by to byl normalni slovnik
+   print(decoded["name"] + " has sent: " + decoded["message"] + " at " + decoded["time"]) 
+```
+
+### Použití JSON: oboustranná komunikace
+
+Oboustranná komunikace je jen otázkou zkombinování obou předchozích postupů.
+Úplný příklad je dostupný v: `example/ws-json`.
+
+## Examples
+
+Kompletní ukázky jsou dostupné v:
+- `example/ws-hello-world` - jednoduchý hello world: JS posílá zprávu, Tornado ji s drobnou úpravou posílá zpět, JS ji zobrazí
+- `example/ws-json` - oboustranná komunikace skrz JSON formát: JS posílá slovník představující zprávu, Tornado jej upraví a odpoví, JS poté zobrazí příchozí slovník
