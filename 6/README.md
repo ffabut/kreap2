@@ -56,7 +56,7 @@ SQLite3 není tak rychlé při obrovské velikosti databáze, nebo při zápisu 
 SQLite3 není třeba instalovat, stačí vytvořit prázdný soubor, tím si ušetříme spoustu práce, a nemusí běžet pořád - tím ušetříme výkon stroje, na kterém běží náš webserver.
 V případě masivního růstu velikosti projektu, který používá SQLite3, můžeme provést migraci na některou z variant plnohodnotných SQL serverů.
 
-### Terminologie SQLite
+### Terminologie SQLite/SQL
 
 Connection - jde o připojení k samotné databázi (v SQLite má význam defacto otevření souboru, v běžném SQL jde o připojení k SQL serveru).
 
@@ -72,6 +72,8 @@ Table - tabulka v rámci databáze (například users, products atd.) - může o
 
 Než začneme musíme vytvořit prázdný soubor, který bude SQLite3 používat k ukládání dat do databáze.
 Pro tuto kapitolu budeme používat název souboru `example.db`.
+
+### Vytvoření TABLE / tabulky
 
 Když je soubor vytvořen, začneme tím, že vytvoříme skript `create_table.py` v rámci něhož v databázi vytvoříme nový table (novou tabulku - do níž poté můžeme zapisovat jednotlivé záznamy):
 
@@ -98,8 +100,9 @@ conn.commit()
 conn.close()
 ```
 
-Nyní máme v databázi `example.db` jeden table/tabulku pojmenovanou `users`, která má 6 sloupců.
-Teď můžeme do této tabulky zapsat nové hodnoty, vytvořme soubor `main.py` a pojďme na to:
+### Vložení záznamu do tabulky
+
+Když máme databázi `example.db` a v ní table/tabulku `users`, tak můžeme do tabulky zapsat nové hodnoty. Vytvořme soubor `main.py` a pojďme na to:
 
 ```python
 import sqlite3
@@ -109,18 +112,26 @@ c = conn.cursor()
 
 ### ZÁPIS DO DATABÁZE
 
-# Insert a row of data
+# vložíme nový řádek do tabulky users
 c.execute("INSERT INTO users VALUES ('agajdosi','gajdosik@gmail.com', 101.65, 27)")
 
-# další řádek dat
+# další řádek do tabulky users
 c.execute("INSERT INTO users VALUES ('petra','petra@gmail.com', 560.00, 29)")
 
-# Save (commit) the changes
+# uložíme změny
 conn.commit()
 
-### ČTENÍ Z DATABÁZE
+# Kdyz jsme hotovi, nezapomeneme zavrit pripojeni k databazi
+conn.close()
+```
 
-# data získáme pomocí SQL příkaz SELECT, * má význam, že chceme všechny sloupce
+### Čtení z tabulky
+
+K čtení dat z tabulky používáme SQL příkaz SELECT.
+Můžeme specifikovat jména sloupců, které chceme získat, anebo jednoduše specifikovat `*` a získat všchny sloupce:
+
+```python
+# data získáme pomocí SQL příkazu SELECT, * má význam, že chceme všechny sloupce
 c.execute('SELECT * FROM users')
 
 # z kurzoru nyní můžeme dostat výsledky
@@ -131,10 +142,9 @@ row = c.fetchone()
 # například: ("agajdosi", "andreas.gajdosik@gmail.com", 101.65, 27) 
 # můžeme vypsat prvky tuplu:
 print("user:", row[0], "mail:", row[1], "kredit:", row[2], "vek:", row[3])
-
-# Kdyz jsme hotovi, nezapomeneme zavrit pripojeni k databazi
-conn.close()
 ```
+
+#### Získávání dat - fetchall()
 
 Někdy se může hodit získat všechny řádky a ne pouze ten první, pro to můžeme použít metodu `fetchall()`:
 
@@ -148,3 +158,61 @@ for row in rows:
     print("user:", row[0], "mail:", row[1], "kredit:", row[2], "vek:", row[3])
 ```
 
+## Pokročilejší příkazy v SQLite3
+
+Jazyk SQL, respektive jeho varianta SQLite obsahuje obrovské množství příkazů.
+Projít a naučit se je všechny je běh na dlouhou trať, dá se ale pohodlně vyjít i jenom s pár základními.
+Ukážeme si proto alespoň ještě pár těch základních:
+
+### Získání jen některých řádků - WHERE
+
+Příkazy SQL můžeme rozšířit o statement WHERE, který specifikuje podmínku, jakých řádků se celý příkaz týká.
+Pro získání řádků, kde je username rovno `petra` můžeme použít tento příkaz:
+
+```SQL
+SELECT * FROM users WHERE username = "petra"
+```
+
+### Několika násobné WHERE - rozšíření o AND, OR
+
+Podmínku WHERE můžeme pomocí logických operátorů AND, OR, NOT rozšířit o další podmínky:
+
+```SQL
+SELECT * FROM users WHERE username = "petra" AND credit > 150 OR credit < 100
+```
+
+### Negace - operátor NOT
+
+Podmínku WHERE, AND, OR můžeme negovat pomocí operátoru NOT:
+
+```SQL
+SELECT * FROM users WHERE NOT username = "petra" AND NOT credit < 150 
+```
+
+### Editace řádků - UPDATE
+
+Vložené řádky v databázi můžeme samozřejmě i editovat - k tomu slouží příkaz UPDATE.
+Ale pozor: pokud nebudeme výběr blíže specifikovat pomocí podmínky WHERE, pak UPDATE bude editovat všechny řádky v tabulce.
+Většinou tak budeme kombinovat UPDATE s podmínkou WHERE.
+V tomto příkazu pozměníme sloupec username na hodnotu andreas u všech řádků, kde username je `agajdosi`, tedy defacto přejmenujeme uživatele:
+
+```SQL
+UPDATE users SET username = "andreas" WHERE username = "agajdosi" 
+```
+
+### Mazání řádků - DELETE
+
+Řádky můžeme i kompletně vymazat, k tomu slouží příkaz DELETE a opět pozor: pokud nespecifikujeme podmínku WHERE, pak maže všechny řádky.
+S podmínkou maže použe ty řádky, které vyhovují podmínce:
+
+```SQL
+DELETE FROM users WHERE username = "agajdosi";
+```
+
+## SQLite Browser: grafický program na editaci databází
+
+Textové příkazy jsou praktické pro vkládání/editování/získávání dat pomocí Pythonu.
+Na kontrolu a prozkoumávání databáze je ale možná lidsky příjemnější grafické prostředí.
+V takovém případě si můžete nainstalovat program [SQLite Browser](https://sqlitebrowser.org/).
+
+S jeho pomocí jde přehledně a jednoduše otevřít databáze, vytvořit nový TABLE, vložit/editovat záznamy, mazat záznamy a TABLEs, upravovat TABLEs, sloupce a podobně.
