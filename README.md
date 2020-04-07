@@ -10,3 +10,4 @@ Zápisky a materiály k výuce.
 3. Webový server: [templaty a renderování templatů v Tornadu](3/README.md)
 4. Webový server: [interakce - HTML form a zpracovani skrze metodu POST a GET v Tornadu](4/README.md)
 5. Webový server: [interakce - websocket protokol v Tornadu](5/README.md)
+6. Databáze: [jazyk SQL, jednoduchá databáze v Pythonu pomocí SQLite](6/README.md)
