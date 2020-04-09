@@ -206,7 +206,34 @@ UPDATE users SET username = "andreas" WHERE username = "agajdosi"
 S podmínkou maže použe ty řádky, které vyhovují podmínce:
 
 ```SQL
-DELETE FROM users WHERE username = "agajdosi";
+DELETE FROM users WHERE username = "agajdosi"
+```
+
+### Omezení počtu získaných řádků - LIMIT
+
+SQL příkazy v základě ovlivňují všechny řádky v dané tabulce: SELECT získá všechny řádku, UPDATE pozmění dané hodnoty ve všech řádcích, stejně tak DELETE smaže všechny řádky.
+Jednou z možností je příkazy omezit podmínkou WHERE, druhou možností je podmínka LIMIT, který nastaví maximální počet řádků, na kterém se příkaz provede.
+
+Například jak získat všechny hodnoty z maximálně 10 řádků tabulky:
+
+```SQL
+SELECT * FROM users LIMIT 10
+```
+
+### Seřazení - ORDER BY
+
+Občas se hodí řádky před získáním/editováním/mazáním seřadit.
+K tomu můžeme použít příkaz ORDER BY:
+
+```SQL
+SELECT * FROM users ORDER BY credit ASC
+SELECT * FROM users ORDER BY credit DESC
+```
+
+Pokud zkombinujeme ORDER BY a LIMIT, můžeme efektivně smazat třeba 10 uživatelů s nejnižším creditem:
+
+```SQL
+DELETE FROM users ORDER BY credit ASC LIMIT 10
 ```
 
 ## SQLite Browser: grafický program na editaci databází
@@ -216,3 +243,7 @@ Na kontrolu a prozkoumávání databáze je ale možná lidsky příjemnější 
 V takovém případě si můžete nainstalovat program [SQLite Browser](https://sqlitebrowser.org/).
 
 S jeho pomocí jde přehledně a jednoduše otevřít databáze, vytvořit nový TABLE, vložit/editovat záznamy, mazat záznamy a TABLEs, upravovat TABLEs, sloupce a podobně.
+
+## Examples
+
+- SQLite3 hello world dostupná v: `examples/sqlite-hello`
