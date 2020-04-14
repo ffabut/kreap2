@@ -11,3 +11,5 @@ Zápisky a materiály k výuce.
 4. Webový server: [interakce - HTML form a zpracovani skrze metodu POST a GET v Tornadu](4/README.md)
 5. Webový server: [interakce - websocket protokol v Tornadu](5/README.md)
 6. Databáze: [jazyk SQL, jednoduchá databáze v Pythonu pomocí SQLite](6/README.md)
+7. Data-mining: [](7/README.md)
+8. Webový server - jdeme online: [nastavení Tornada, instalace na Linux v Cloudu, registrace domény, přesměrování DNS](8/README.md)

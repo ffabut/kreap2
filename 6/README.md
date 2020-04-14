@@ -1,4 +1,4 @@
-# Lekce 5: Databáze - jazyk SQL, jednoduchá databáze SQLite
+# Lekce 6: Databáze - jazyk SQL, jednoduchá databáze SQLite
 
 Nejen v případě webových serverů, ale i běžných skriptů a jiných aplikací v Pythonu, je občas potřeba uložit data tak, aby byla dostupná i po restartu aplikace/skriptu/serveru/systému.
 K perzistentnímu uložení dat přitom nemůžeme využít proměnné - ty jsou nenávratně ztraceny po ukončení programu.
