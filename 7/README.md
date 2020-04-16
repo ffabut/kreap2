@@ -96,16 +96,86 @@ soup = BeautifulSoup(r.text, 'html.parser')
 # chceme pocet mrtvych
 # to je element typy p (paragraph)
 # a s id="count-dead"
-# k vyhledavani elementu pouzivame metodu find_all()
+# k vyhledavani elementu pouzivame metodu find() - vrati 1. vyhovujici element
 # prvni parametr rika, jaky typ elementu chceme (p=<p>, a=<a>, div=<div>, span=<span>, img=<img> atd...)
 # v pojmenovaném parametry ID muzeme specifikovat ID hledanych prvku
 # v pojmenovanem parametru class muzeme specifikovat class hledanych prvku
-matches = soup.find_all("p", id="count-dead")
+match = soup.find("p", id="count-dead")
 
-#vezmeme prvni nalez (muze jich byt vic)
-pocet = matches[0]
 
-#v tomto jednom elementu se dostaneme k textovemu obsahu pres promennou/atribut text
-dead = pocet.text
-print("Mrtvých na COVID-19 v ČR je aktuálně dle MZČR:", dead)
+# v elementu se dostaneme k textovemu obsahu pres promennou/atribut .text
+print("Mrtvých na COVID-19 v ČR je aktuálně dle MZČR:", match.text)
+```
+
+### Vyhledávání všech prvků: find_all()
+
+Alternativou funkce `find()` je funkce `find_all()`, která nevrací pouze jeden nalezený element (první), ale vrací seznam všech vyhovujících elementů.
+Použití je následující:
+
+```python
+import requests
+from bs4 import BeautifulSoup
+
+r = requests.get("https://onemocneni-aktualne.mzcr.cz/covid-19")
+soup = BeautifulSoup(r.text, 'html.parser')
+
+matches = soup.find_all("p") #vyhledáme všechny odstavce na stránce
+# matches je seznam prvků: [ element1, element2, element3 ]
+
+print(matches) #vypis vsech nalezenych elementu
+print("Prvni odstavec na strance obsahuje text:", matches[0].text)
+
+print("celkem je na stránce:", len(matches), "odstavců.")
+```
+
+### Vychytávky s find() a find_all()
+
+#### Vyhledávání podle třídy
+
+`class` je v Pythonu klíčovým slovem, nemůžeme jej proto použít jako název parametru ve funkci:
+
+```python
+purple = soup.find("div", class="background--purple") # toto napise chybu
+```
+
+BeautifulSoup proto namísto `class` používá jako jméno parametru `class_`.
+Vyhledávání podle třídy tedy bude vypadat takto:
+
+```python
+purple = soup.find("div", class_="background--purple")
+```
+
+#### Vyhledávání podle ostatních atributů
+
+Můžeme vyhledávat i podle ostatních HTML atributů - jako jméno parametru zkrátka použijeme jméno hledaného atributu, například: 
+
+```python
+odkaz = soup.find("a", href="/") # odkaz na home - index page
+obrazek = soup.find("img", src="1.jpeg")
+```
+
+##### Atributy můžeme kombinovat
+
+```python
+div = soup.find("div", class_="main", href="/")
+```
+
+### Zanořené vyhledávání
+
+Někdy není možné se k prvku, který potřebujeme, dostat na první dobrou pomocí typu elementu, id, class a dalších parametrů.
+V takovém případě musíme vyhledat rodiče kýženého prvku - a v něm poté vyhledávat dál (ovšem už hledáme pouze v rodičovi - nevyhledáme nechtěné matche jinde na stránce).
+
+V elementech vyhledaných skrze `find()` a `find_all()` můžeme dále vyhledávat - zavoláme na nich opět funkci `find()` jako ji voláme na objektu `soup`, který představuje celé HTML.
+
+```python
+import requests
+from bs4 import BeautifulSoup
+
+r = requests.get("https://onemocneni-aktualne.mzcr.cz/covid-19")
+soup = BeautifulSoup(r.text, 'html.parser')
+
+parent = soup.find("div", class_="background--purple") #najdeme fialovy div, ktery obsahuje par textu a cislo poctu hospitalizovanych
+cislo = parent.find("p", class_="mt-5") # v ramci divu hledame odstavec tridy mt-5, ktery obsahuje nami kyzene cislo poctu hospitalizovanych
+
+print("Počet hospitalizovaných:", cislo.text)
 ```

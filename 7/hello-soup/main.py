@@ -11,12 +11,8 @@ soup = BeautifulSoup(r.text, 'html.parser')
 # chceme pocet mrtvych
 # to je element typy p (paragraph)
 # a s id="count-dead"
-# k vyhledavani elementu pouzivame metodu find_all()
-matches = soup.find_all("p", id="count-dead")
+# k vyhledavani elementu pouzijeme metodu find() - ta vrati prvni vyhovujici element
+match = soup.find("p", id="count-dead")
 
-#vezmeme prvni nalez (muze jich byt vic)
-pocet = matches[0]
-
-#v tomto jednom elementu se dostaneme k textovemu obsahu pres promennou/atribut text
-dead = pocet.text
-print("Mrtvých na COVID-19 v ČR je aktuálně dle MZČR:", dead)
+# k textovemu obsahu elementu se dostaneme pres promennou/atribut text
+print("Mrtvých na COVID-19 v ČR je aktuálně dle MZČR:", match.text)
