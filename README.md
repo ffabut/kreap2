@@ -15,4 +15,3 @@ Zápisky a materiály k výuce.
 8. Spolupráce: [Správa verzí a spolupráce přes Git a Github](8/README.md)
 9. Regulární výrazy: [](9/README.md)
 10. Webový server - jdeme online: nastavení Tornada, instalace na Linux v Cloudu, registrace domény, přesměrování DNS
- 
