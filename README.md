@@ -13,5 +13,5 @@ Zápisky a materiály k výuce.
 6. Databáze: [jazyk SQL, jednoduchá databáze v Pythonu pomocí SQLite](6/README.md)
 7. Data-mining: [Requests - stáhnutí souboru či stránky, BeautifulSoup4 - vyhledání elementu v HTML](7/README.md)
 8. Spolupráce: [Správa verzí a spolupráce přes Git a Github](8/README.md)
-9. Regulární výrazy: [](9/README.md)
-10. Webový server - jdeme online: nastavení Tornada, instalace na Linux v Cloudu, registrace domény, přesměrování DNS
+9. Regulární výrazy: [regulární výrazy obecně, regulární výrazy v pythonu - modul re](9/README.md)
+10. Webový server - [jdeme online: nastavení Tornada, registrace domény, přesměrování DNS](10/README.md)
