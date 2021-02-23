@@ -3,7 +3,12 @@
 Předmět Kreativní programování 2 (letní semestr) na FaVU VUT v Brně.
 Zápisky a materiály k výuce.
 
-## Osnova kurzu
+## Osnova kurzy 2020/2021
+
+1. Úvod do kurzu
+2. Data-mining: [Requests - stáhnutí HTML souboru, BeautifulSoup4 - vyhledání elementu v HTML](7/README.md)
+
+## Osnova kurzu 2019/2020
 
 1. Úvod do kurzu
 2. Webový server: [seznámení s frameworkem Tornado](2/README.md)

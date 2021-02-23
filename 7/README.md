@@ -1,11 +1,27 @@
-# Lekce 7: Jdeme online
+# Lekce 7: Data-mining pomocí web scrapingu - Requests a BeautifulSoup4
 
-Jednou z výhod webu běžícího na serveru, kterou jsme zatím neprobrali, je možnost získávat data z jiných míst na internetu, zpracovávat je, ukládat je a nakonec či rovnou je zobrazovat.
-Se statickým webem a JavaScriptem něco takového přitom ve většině případů nemůžeme udělat.
+Web scraping je technika, při které pomocí skriptu stahujeme HTML soubor(y) z internetu a získáváme z nich data, která můžeme použít k nejrůznějším účelům.
+
+## Použití
+
+### Těžba dat
+
+Pomocí web scrapingu můžeme získávat data z jedné stránky, nebo ze stovek stránek a tato data následně zpracovávat.
+Můžeme například hleda titulky článků na online zpravodajských serverech, získávát obrázky z online dokumentů atd.
+
+Výsledky můžeme ukládat na disk - například obrázky, anebo je můžeme ukládat do textového souboru, případně do databáze - zde můžeme použít například relativně friendly modul SQLite3.
+
+### Zobrazení dat na dynamickém webovém serveru (např. Tornado)
+
+Pokud v Pythonu později naprogramujeme vlastní server (třeba ve frameworku Tornado), můžeme použít web-scraping k získávání dat v reálném čase.
+Ve chvíli, kdy dojde požadavek na zobrazení stránky od návštěvníka našeho webu, můžeme začít získávat data z jiných míst na internetu, zpracovávat je, ukládat je nebo je rovnou návštěvníkovi zobrazit.
+Můžeme přitom de facto stahovat libovolný obsah (dokud nebudeme úplně mega nápadní - 100 tis. stáhnutí z jednoho webu za hodinu není úplně dobrý nápad) - v takovém případě můžeme využít například proxy.
+
+Pokud bychom něco takového chtěli udělat se statickým webem (pevně daný HTML soubor, JavaScript a CSS), tak by to ve většině případů nebylo možné.
 Prohlížeče z bezpečnostních důvodů blokují přístup JavaScriptu k jiným doménám než k té, na které JavaScript běží (pokud připojení odkudkoliv domény vyloženě nepovolí).
-
 Stáhnout tak pomocí JavaScriptu články z idnes.cz nebo webu armády ČR nelze, povolí nám to tak leda určité části wikipedie.
-Náš webový server ale takovým problémům vystaven není a můžeme tak z něj stahovat libovolný obsah (dokud nebudeme úplně mega nápadní - 100 tis. stáhnutí z jednoho webu za hodinu není úplně dobrý nápad).
+
+Dynamický web server naprogramovaný v Pythonu nám tak, co se týče zobrazování live dat, nabízí mnohem více možností.
 
 ## Stažení souboru z webu - modul Requests
 
