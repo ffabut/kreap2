@@ -10,6 +10,55 @@ Nevýhodou tohoto řešení je, že není příliš přátelské k asynchronicit
 Pokud ale ohlídáme, že do souboru píšeme jen z jednoho procesu v čase, pak jsme v bezpečí.
 Zápis do souboru se tak hodí spíš na méně časté zápisy jako třeba ukládání konfiguračních souborů nějaké aplikace - to je v kombinaci s formátem JSON nebo YAML naprosto běžná praxe.
 
+Pro připomenutí malá ukázka zápisu textu do souboru:
+
+```python
+# a=append to file, will add text after existing text in the file
+# w=write to file, will delete the file and then add new text
+# x=create file, gives error if file exists - to secure we write to fresh file / we are not owerwritting existing file
+f = open("myFile.txt", "a") # a = append
+f.write("Appending new line to the file.")
+f.write("Appending another line to the file!")
+f.write("And another line.")
+
+f.close() # do not forget to close the file
+```
+
+Alternativně můžeme použít `with` statement, který za nás file automaticky zavře:
+
+```python
+with open('myFile.txt', 'a') as f:
+    f.write("Adding some text\n")
+    f.write("And its going to close automatically")
+print("file is now closed")
+```
+
+### CSV - comma separated values
+
+Do textového souboru můžeme zapisovat hodnoty po jednotlivých řádcích - například odkazy na vyhledané obrázky, anebo stáhnuté komentáře.
+Ale občas potřebujeme zapsat de facto seznam, který obsahuje dvojici, trojici nebo více souvisejících hodnot (např. username,password,email).
+V takovém případě můžeme využít formát CSV a jednotlivé hodnoty na každém řádku oddělit separátorem - čárkou nebo jiným znakem.
+
+Python nabízí modul `csv`, který nám takovou práci usnadní:
+
+```python
+import csv
+
+with open('employee.csv', mode='w') as empfile:
+    empwr = csv.writer(empfile)
+    empwr.writerow(['John Smith', 'Accounting', 'November 2020'])
+    empwr.writerow(['Erica Meyers', 'IT', 'March 2019'])
+    empwr.writerow(['Johanna Maxe', 'CEO', 'July 2018'])
+
+# soubor znovu otevreme, ale tentokrat pro cteni
+with open('employee.csv', mode='r') as empfile:
+    empread = csv.reader(empfile) # reader vraci iterator, pres ktery muzeme prochazet
+    for record in empread:
+        print(record[0],record[1],record[2])
+```
+
+Stručný tutoriál k CSV v Pythonu je dostupný na: https://realpython.com/python-csv/
+
 ## Ukládání dat do databáze
 
 Druhou a více robustní možností je ukládat data do databáze.
@@ -44,19 +93,24 @@ Tuto variantu se v tomto kurzu naučíme používat.
 ### Ne-SQL databáze
 
 Existují i databáze založené na jiném než SQL principu, například:
-- NoSQL databáze (MongoDB)
-- graph databáze (Dgraph, neo4j) - vhodné pro zachycování sociálních sítí
+- NoSQL databáze (MongoDB) - nerelační databáze, umožňují ukládat nestruktorovaná data, ale jsou těžší na implementaci, více kódění atd.
+- graph databáze (Dgraph, neo4j) - vhodné pro zachycování sociálních sítí, často databáze, které již neodpovídají logice "tabulky" s řádky a sloupci, vhodné pro ukládání komplexnějších dat třeba právě jako kdo kamarádí s kým atd.
 
 ## Databáze SQLite3
 
-SQLite3 je nativním modulem v Pythonu (není třeba instalovat), který umožňuje pracovat s textovým souborem jakoby byl běžnou SQL databází.
-Čtení a zápis dat do databáze tak neřeší specializovaný server, který někde musí být nainstalován a dál běžet 24/7, ale namísto toho zápis/čtení řeší přímo modul SQLite3, kdy je potřeba.
+SQLite3 je built-in modulem v Pythonu, tedy není třeba jej instalovat, který umožňuje pracovat s textovým souborem jakoby byl běžnou SQL databází.
+Čtení a zápis dat do databáze tak neřeší specializovaný server, který někde musí být nainstalován a dál běžet 24/7, ale namísto toho zápis/čtení řeší přímo modul SQLite3, kdy je potřeba, databáze je uložena v textovém souboru.
+Velmi jednoduché a elegantní řešení.
 
 SQLite3 není tak rychlé při obrovské velikosti databáze, nebo při zápisu v řádech stovek či tisíců hodnot za sekundu, ale pro většinu menších a středních webů v klidu stačí.
 SQLite3 není třeba instalovat, stačí vytvořit prázdný soubor, tím si ušetříme spoustu práce, a nemusí běžet pořád - tím ušetříme výkon stroje, na kterém běží náš webserver.
 V případě masivního růstu velikosti projektu, který používá SQLite3, můžeme provést migraci na některou z variant plnohodnotných SQL serverů.
 
-### Terminologie SQLite/SQL
+Ukázka SQLite3 databáze zobrazené v programu SQLite Browser, všimněme si, že jde v základu o tabulku s řádky a sloupci, velmi podobné tomu, co známe z excelu:
+
+![Ukázka databáze](databaze.jpg)
+
+### Terminologie SQLite3/SQL
 
 Connection - jde o připojení k samotné databázi (v SQLite má význam defacto otevření souboru, v běžném SQL jde o připojení k SQL serveru).
 
@@ -236,7 +290,7 @@ Pokud zkombinujeme ORDER BY a LIMIT, můžeme efektivně smazat třeba 10 uživa
 DELETE FROM users ORDER BY credit ASC LIMIT 10
 ```
 
-## SQLite Browser: grafický program na editaci databází
+### SQLite Browser: grafický program na editaci databází
 
 Textové příkazy jsou praktické pro vkládání/editování/získávání dat pomocí Pythonu.
 Na kontrolu a prozkoumávání databáze je ale možná lidsky příjemnější grafické prostředí.

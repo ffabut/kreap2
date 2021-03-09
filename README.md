@@ -7,6 +7,8 @@ Zápisky a materiály k výuce.
 
 1. Úvod do kurzu
 2. Data-mining: [Requests - stáhnutí HTML souboru, BeautifulSoup4 - vyhledání elementu v HTML](7/README.md)
+3. Regulární výrazy: [regulární výrazy obecně, regulární výrazy v pythonu - modul re](9/README.md)
+4. Databáze: [jazyk SQL, jednoduchá databáze v Pythonu pomocí SQLite](6/README.md)
 
 ## Osnova kurzu 2019/2020
 
