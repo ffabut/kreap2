@@ -20,6 +20,10 @@ Po inicializaci pygame musíme nastavit velikost okna.
 K tomu slouží funkce `pygame.display.set_mode()`, která inicializuje grafické okno.
 Kompletní přehled argumentů funkce je: `set_mode(size=(0, 0), flags=0, depth=0, display=0, vsync=0) -> Surface` (funkce vrací objekt typu pygame.Surface).
 
+Objekt Surface představuje plochu, do které je možné vykreslovat.
+V tomto případě jde o plochu okna programu, do níž budeme vykreslovat, avšak Surface můžeme vytvořit i pro jiné účely - například mít Surface, do něhož vykreslíme animaci naší postavy a tento postavový Surface až následně vykreslíme na konkrétní místo na hlavním Surface.
+Surface se tedy neváže pouze výlučně k ploše okna.
+
 #### Výška a šířka okna
 
 Prvním argumentem této funkce je tuple či seznam obsahující dva integer prvky - šířku a výšku okna v pixelech, ukázka:
@@ -173,7 +177,9 @@ while running:
 pygame.quit()
 ```
 
-### Pygame.draw
+### Vykreslování základních tvarů
+
+#### pygame.draw - vykreslování základních tvarů
 
 Modul `pygame.draw` nám nabízí několik užitečných funkcí pro vykreslování základních tvarů:
 
@@ -193,4 +199,53 @@ Všimněme si, že všechny tyto funkce vrací objekt `pygame.Rect` - obdélník
 To je praktické, jelikož tento objekt potom můžeme použít jako parametr funkce `pygame.display.update()` a tím updatovat pouze tu část obrazovky, kterou jsme pozměnili - tím ušetříme výkon.
 
 Pro lepší představu se můžete podívat na [ukázkový program draw-example.py](draw-example.py) představující použití funkcí modulu `pygame.draw`.
+
+#### pygame.image - vykreslování obrázků aka bitmap
+
+Pokud chceme vykreslit obrázek na Surface, pak jej musíme prvně načíst pomocí funkce `pygame.image.load(filename) -> Surface`.
+Navrácený object Surface poté stačí pomocí funkce `blit()` vykreslit na hlavní plátno:
+
+```python
+img = pygame.image.load("myimage.jpg")
+screen.blit(img, (50, 50))
+```
+
+Pro lepší přehled si můžete prohlédnout ukázkový program [image-example.py](image-example.py).
+
+#### pygame.font - vykreslování textu
+
+Pro vykreslení fontu musíme prvně vytvořit objekt `Font`, to můžeme udělat dvěma způsoby:
+- `pygame.font.SysFont(name, size, bold=False, italic=False) -> Font` - vytvoří font z fontů dostupných v operačním systému
+- `pygame.font.Font(filename, size) -> Font` - načte font ze souboru, pokud je název filename None, pak použije defaultní font
+
+Na objektu font poté můžeme volat metodu `Font.render(text, antialias, color, background=None) -> Surface`, s jejíž pomocí dostaneme objekt Surface, který poté už stačí pouze umístít na konkrétní místo na hlavním plátně pomocí funkce `pygame.Display.blit()`:
+
+```python
+myfont = pygame.font.SysFont('Comic Sans MS', 130)
+textsurface = myfont.render('Some Text', False, (0, 0, 0))
+screen.blit(textsurface,(50,50))
+```
+
+Kompletní kód je dostupný v [text-example.py](text-example.py).
+
+
+### Uložení Surface jako obrázku
+
+Surface, ať už hlavní Surface představující plátno obrazovky, anebo nějaký jiný pod-Surface, můžeme uložit jako obrázek.
+K tomu můžeme použít funkci `pygame.image.save(Surface, filename) -> None`.
+Podporované formáty jsou BMP, TGA, PNG, nebo JPEG.
+Použití je jednoduché:
+
+```python
+import pygame
+
+pygame.init()
+screen = pygame.display.set_mode([600, 400])
+#
+# něco vykreslujeme
+#
+pygame.image.save(screen, "screenshot.jpg") # ukládáme
+```
+
+
 
