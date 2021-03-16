@@ -247,5 +247,109 @@ screen = pygame.display.set_mode([600, 400])
 pygame.image.save(screen, "screenshot.jpg") # ukládáme
 ```
 
+### Zvuk
+
+Pro přehrávání hudby můžeme použít modul `pygame.mixer.music`.
+
+Jednoduchý příklad:
+
+```python
+pygame.mixer.music.load("music.mp3")
+pygame.mixer.music.play(-1) # -1 skladba bude přehrána v loopu
+```
 
 
+### Interakce
+
+#### pygame.key
+
+Pro získání informací o zmáčknutých klávesách na klávesnici můžeme použít modul `pygame.key`.
+Rychle zmáčknuté klávesy však v tomto případě nemusí být detekovány, taktéž nezískáme informace o pořadí zmáčknutí kláves a ani není jednoduché dostat překlad zmáčknutých písmen (například shift+a = A), ale dostaneme jen informaci o tom, že je zmáčknutý `shift` a klávesa `a`.
+Pro většinu případů je tedy lepší použít spíše modul `pygame.event`.
+
+Plná dokumentace na: https://www.pygame.org/docs/ref/key.html.
+
+#### pygame.mouse
+
+Pomocí modulu `pygame.mouse` můžeme získat informace o pozici myši, zmáčknutých tlačítkách apod.
+Detekce tlačítek je podobně jako u kláves na klávesnici lepší realizovat přes `pygame.event`.
+
+Pro detekci pozice myši použijeme funkci `pygame.mouse.get_pos() -> (x, y)`, pozice myši je vztažená k levému hornímu okraji okna pygame.
+Ukázka:
+
+```python
+x, y = pygame.mouse.get_pos()
+print(x,y)
+```
+
+Plná dokumentace na: https://www.pygame.org/docs/ref/mouse.html.
+
+#### pygame.event
+
+Modul `pygame.event` jsme již využili v předchozích examplech - s jeho pomocí detekujeme informaci o tom, zda uživatelka zmáčknula close button okna s cílem ukončit naši hru:
+
+```python
+for event in pygame.event.get():
+  if event.type == pygame.QUIT:
+    running = False
+```
+
+Tento cyklus pracující s funkcí `pygame.event.get()` můžeme rozšířit o detekci zmáčknutých kláves a tím získat informaci o interakci ze strany uživatelky.
+Budeme k tomu využívat proměnnou `event.key`, jenž obsahuje informaci o zmáčknuté klávese.
+Příklad detekce šipek na klávesnici:
+
+```python
+for event in pygame.event.get():
+  if event.type == pygame.QUIT:
+    running = False
+
+  #detekce kláves
+  if event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_LEFT:
+      print("left arrow pressed")
+    if event.key == pygame.K_RIGHT:
+      print("right arrow pressed")
+    if event.key == pygame.K_UP:
+      print("up arrow pressed")
+    if event.key == pygame.K_DOWN:
+      print("down arrow pressed")
+```
+
+Všimněme si, že k porovnání zmáčknutého tlačítka používáme do pygame zabudované konstanty jako `pygame.K_UP`.
+Dostupné konstanty je možné vidět v dokumentaci modulu `pygame.key` na: https://www.pygame.org/docs/ref/key.html.
+
+Kromě eventu `pygame.QUIT` a `pygame.KEYDOWN` je dostupná i řada dalších eventů, které můžeme detekovat, mezi základní z nich patří:
+
+```
+QUIT              none
+ACTIVEEVENT       gain, state
+KEYDOWN           key, mod, unicode, scancode
+KEYUP             key, mod
+MOUSEMOTION       pos, rel, buttons
+MOUSEBUTTONUP     pos, button
+MOUSEBUTTONDOWN   pos, button
+JOYAXISMOTION     joy (deprecated), instance_id, axis, value
+JOYBALLMOTION     joy (deprecated), instance_id, ball, rel
+JOYHATMOTION      joy (deprecated), instance_id, hat, value
+JOYBUTTONUP       joy (deprecated), instance_id, button
+JOYBUTTONDOWN     joy (deprecated), instance_id, button
+VIDEORESIZE       size, w, h
+VIDEOEXPOSE       none
+USEREVENT         code
+```
+
+Další eventy a kompletní dokumentaci modulu naleznete na: https://www.pygame.org/docs/ref/event.html.
+
+### Rozpohybování hry
+
+Abychom rozpohybovali prvky v naší hře, musíme měnit jejich pozici.
+Jednou z jednoduchých možností je napojit pozici objektu na interakci ze strany uživatele.
+Pro ukázku se podívejte na ukázkový skript [movement-example.py](movement-example.py).
+
+
+### Další pěkné moduly pygame
+
+- [pygame.camera](https://www.pygame.org/docs/ref/camera.html)
+- [pygame.joystick](https://www.pygame.org/docs/ref/joystick.html)
+- [pygame.cursors](https://www.pygame.org/docs/ref/cursors.html)
+- [pygame.midi](https://www.pygame.org/docs/ref/midi.html)
