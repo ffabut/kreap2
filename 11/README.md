@@ -187,8 +187,10 @@ Modul `pygame.draw` nám nabízí několik užitečných funkcí pro vykreslová
 - `pygame.draw.aaline(surface, color, start_pos, end_pos) -> Rect`
 - `pygame.draw.aalines(surface, color, closed, points) -> Rect`
 
+Detaily k funkcím modulu `pygame.draw` je možné nalézt na: https://www.pygame.org/docs/ref/draw.html#pygame.draw.rect.
+
 Všimněme si, že všechny tyto funkce vrací objekt `pygame.Rect` - obdélník ohraničující námi vykreslený objekt.
 To je praktické, jelikož tento objekt potom můžeme použít jako parametr funkce `pygame.display.update()` a tím updatovat pouze tu část obrazovky, kterou jsme pozměnili - tím ušetříme výkon.
 
-Detaily k funkcím modulu `pygame.draw` je možné nalézt na: https://www.pygame.org/docs/ref/draw.html#pygame.draw.rect.
+Pro lepší představu se můžete podívat na [ukázkový program draw-example.py](draw-example.py) představující použití funkcí modulu `pygame.draw`.
 
