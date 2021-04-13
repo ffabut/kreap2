@@ -16,7 +16,7 @@ Pro vytvoření okna, voláme funkci `tkinter.Tk()` a jí navrácený objekt ulo
 Na objektu window poté budeme tvořit naše GUI, v tomto případě nastavujeme title okna a velikost okna.
 Vykreslování GUI spustíme zavoláním metody `mainloop()` na objektu `window`:
 
-```python3
+```python
 import tkinter
 
 window = tkinter.Tk()
@@ -31,7 +31,7 @@ Někdy se podobným funkcím říká také, že jde o tzv. blocking functions / 
 
 Alternativně můžeme vytvořit nekonečný loop sami a namísto metody `mainloop()` volat pravidelně metodu `update()`:
 
-```python3
+```python
 import tkinter
 
 window = tkinter.Tk()
@@ -43,7 +43,7 @@ while True:
   #zde muzeme provadet dalsi vypocty/cokoliv
 ```
 
-## Přidáváme grafické prvky
+## Grafické prvky: Widgety
 
 Prázdné okno není nic moc užitečného, Tkinter nám proto samozřejmě umožňuje přidat do okna grafické prvky, kterým se v Tkinter lingo/hantýrce říká `widgety`.
 Tkinter obsahuje následující widgety:
@@ -60,14 +60,14 @@ Tkinter obsahuje následující widgety:
 - LabelFrame - textem pojmenovaná zóna, slouží jako parent object pro další prvky, může ohraničovat skupinu souvisejících prvků 
 - Menu - skrze Menu widget můžeme přidat meníčko a podmeníčka do horní lišty našeho okna, jak známe z běžných programů, například: File | Edit | View | Help
 
-Pojďme se nyní na widgety podívat podrobně a poté si ukážeme ukázku kompletního programu:
+Pojďme se nyní na widgety podívat podrobněji:
 
 ### Label Widget
 
 Label widget zobrazuje krátký text (jeden řádek) uživatelce.
 Text můžeme updatovat programaticky
 
-```python3
+```python
 import tkinter
 
 window = tkinter.Tk()
@@ -84,15 +84,15 @@ window.mainloop()
 Text widget zobrazuje plochu většího textu (více řádků).
 Text widget může uživateli umožnit text vyhledávat, editovat a označovat.
 
-```python3
-import Tkinter
+```python
+import tkinter
 
-window = Tkinter.Tk()
-text_widget = Tkinter.Text(
+window = tkinter.Tk()
+text_widget = tkinter.Text(
   window,
   width=20,
   height=3)
-text_widget.insert(Tkinter.END,
+text_widget.insert(tkinter.END,
     "Text Widgetn20 characters widen3 lines high")
 text_widget.pack()
 
@@ -103,7 +103,7 @@ window.mainloop()
 
 Entry widget je pole, do kterého může uživatelka napsat text, je to tedy textový vstup od uživatelky:
 
-```python3
+```python
 import tkinter
 
 window = tkinter.Tk()
@@ -125,7 +125,7 @@ Na buttonu můžeme zobrazit obrázek.
 
 V tomto příkladu vytváříme button, který při kliknutí zavolá námi definovanou funkci `eventFunction()`, která vypíše text do konzole:
 
-```python3
+```python
 import tkinter
 
 def eventFunction():
@@ -146,7 +146,7 @@ window.mainloop()
 Radio button umožňuje vytvořit skupinu několika buttonů a zaručit, aby byl pouze jeden z nich zmáčknutý (v ON pozici).
 Informace o tom, jaké tlačítko je označené získáváme pomocí definování proměnné typu `tkinter.IntVar`.
 
-```python3
+```python
 import tkinter
 
 window = tkinter.Tk()
@@ -177,7 +177,7 @@ while True:
 
 Checkbutton widget umožňuje vytvořit označitelná tlačítka, ale narozdíl od radiobutton můžeme u checkbutton označit několik z nich, ne pouze jedno.
 
-```python3
+```python
 import tkinter
 
 window = tkinter.Tk()
@@ -202,77 +202,11 @@ while True:
   print(cb1.get(), cb2.get())
 ```
 
-### Scale Widget
-
-Scale widget vytvoří slider, kterým uživatelka může zvolit číslo v definovaném rozsahu.
-Hodnoty ze scale widget můžeme dostat pomocí metody `.Get()`, případně definovat proměnnou typu `tkinter.IntVar` a dosadit ji do parametru `variable=`.
-
-```python3
-import tkinter
-
-window = tkinter.Tk()
-scale_widget = tkinter.Scale(
-  window,
-  from_=0,
-  to=100,
-  orient=tkinter.HORIZONTAL) #muzeme zvolit i tkinter.VERTICAL
-
-scale_widget.set(25) #nastavime pocatecni hodnotu
-scale_widget.pack()
-
-while True:
-  window.update()
-  print(scale_widget.get())
-```
-
-### LabelFrame Widget
-
-LabelFrame widget se chová jako parent/rodič dalších prvků.
-S jeho pomocí tak můžeme vytvořit zónu souvisejících prvků, která bude ohraničena linkou a nadepsána nějakým textem.
-LabelFrame musí mít nějaké children/potomky, aby byl zobrazený.
-
-```python3
-import tkinter
-
-window = tkinter.Tk()
-
-labelframe_widget = tkinter.LabelFrame(
-  window,
-  text="LabelFrame")
-
-label_widget=tkinter.Label(
-  labelframe_widget, #POZOR! Zde není rodičem window, ale právě labelframe_widget
-  text="Child widget of the LabelFrame")
-
-labelframe_widget.pack(padx=10, pady=10)
-label_widget.pack()
-
-tkinter.mainloop()
-```
-
-### Canvas Widget
-
-Na canvas widget je možné kreslit, podporuje několik kreslících metod.
-Jednoduchá ukázka:
-
-```python3
-import tkinter
-window = tkinter.Tk()
-canvas_widget = tkinter.Canvas(
-  window,
-  bg="blue",
-  width=100,
-  height= 50)
-canvas_widget.pack()
-
-tkinter.mainloop()
-```
-
 ### Listbox Widget
 
 Listbox umožňuje uživatelce vybrat některou z možností, případně zobrazit seznam položek.
 
-```python3
+```python
 import tkinter
 
 window = tkinter.Tk()
@@ -299,5 +233,169 @@ while True:
     items.append(item)
 
   print(items)
+```
+
+### Scale Widget
+
+Scale widget vytvoří slider, kterým uživatelka může zvolit číslo v definovaném rozsahu.
+Hodnoty ze scale widget můžeme dostat pomocí metody `.Get()`, případně definovat proměnnou typu `tkinter.IntVar` a dosadit ji do parametru `variable=`.
+
+```python
+import tkinter
+
+window = tkinter.Tk()
+scale_widget = tkinter.Scale(
+  window,
+  from_=0,
+  to=100,
+  orient=tkinter.HORIZONTAL) #muzeme zvolit i tkinter.VERTICAL
+
+scale_widget.set(25) #nastavime pocatecni hodnotu
+scale_widget.pack()
+
+while True:
+  window.update()
+  print(scale_widget.get())
+```
+
+### Canvas Widget
+
+Na canvas widget je možné kreslit, podporuje několik kreslících metod.
+Jednoduchá ukázka:
+
+```python
+import tkinter
+window = tkinter.Tk()
+canvas_widget = tkinter.Canvas(
+  window,
+  bg="blue",
+  width=100,
+  height= 50)
+canvas_widget.pack()
+
+tkinter.mainloop()
+```
+
+### LabelFrame Widget
+
+LabelFrame widget se chová jako parent/rodič dalších prvků.
+S jeho pomocí tak můžeme vytvořit zónu souvisejících prvků, která bude ohraničena linkou a nadepsána nějakým textem.
+LabelFrame musí mít nějaké children/potomky, aby byl zobrazený.
+
+```python
+import tkinter
+
+window = tkinter.Tk()
+
+labelframe_widget = tkinter.LabelFrame(
+  window,
+  text="LabelFrame")
+
+label_widget=tkinter.Label(
+  labelframe_widget, #POZOR! Zde není rodičem window, ale právě labelframe_widget
+  text="Child widget of the LabelFrame")
+
+labelframe_widget.pack(padx=10, pady=10)
+label_widget.pack()
+
+tkinter.mainloop()
+```
+
+### Menu Widget
+
+The Menu widget can create a menu bar. Creating menus can be hard, especially if you want drop-down menus. To do that, you use a separate Menu widget for each drop-down menu you’re creating.
+
+```python
+import tkinter
+
+def menu_callback():
+    print("I'm in the menu callback!")
+def submenu_callback():
+    print("I'm in the submenu callback!")
+
+window = tkinter.Tk()
+menu_widget = tkinter.Menu(window)
+
+#vytvarime submenu
+submenu_widget = tkinter.Menu(window, tearoff=False) #tearoff=False odstrani prepazku na zacatku submenu
+submenu_widget.add_command(label="Submenu Item1",
+                           command=submenu_callback)
+submenu_widget.add_command(label="Submenu Item2",
+                           command=submenu_callback)
+
+menu_widget.add_cascade(label="Item1", menu=submenu_widget) #pridavame submenu
+menu_widget.add_command(  #pridavame menu
+  label="Item2",
+  command=menu_callback)
+menu_widget.add_command( #pridavame menu
+  label="Item3",
+  command=menu_callback)
+
+window.config(menu=menu_widget)
+
+window.mainloop()
+```
+
+## Kompozice widgetů: widget.grid()
+
+Abychom měli rozmístění widgetů v okně pod kontrolou, můžeme využít metodu widgetů `grid()`.
+Pokud chceme nějaký widget umístit na specifické místo v rámci okna, můžeme tuto pozici specifikovat pomocí metody `grid()`:
+
+```python
+button1.grid(column=0, row=0)
+button2.grid(column=1, row=0)
+button3.grid(column=1, row=1)
+button4.grid(column=2, row=2)
+```
+
+Může se nám stát, že budeme chtít nějaký prvek umístit přes více řádků či sloupců gridu, pak můžeme v metodě `grid()` použít parametry `rowspan=` a `columnspan=`:
+
+```python
+button1.grid(column=0, row=0, rowspan=2)
+button2.grid(column=1, row=0)
+button3.grid(column=1, row=1, columnspan=2)
+button4.grid(column=2, row=2)
+```
+
+Větší ukázku můžeme vidět zde:
+
+```python
+import tkinter
+from tkinter import ttk
+
+window = tkinter.Tk()
+
+#TEXT INPUT
+text_widget = tkinter.Text(
+  window,
+  width=40,
+  height=5,
+  )
+text_widget.insert(tkinter.END, "Text Widget \n20 characters widen\n5 lines high")
+
+#RADIO BUTTONS
+one = tkinter.Checkbutton(window, text="One")
+two = tkinter.Checkbutton(window, text="Two")
+three = tkinter.Checkbutton(window, text="Three")
+
+#LABEL and ENTRY
+namelbl = tkinter.Label(window, text="Name")
+name = tkinter.Entry(window)
+
+#BUTTONS ok and cancel
+ok = tkinter.Button(window, text="Okay")
+cancel = tkinter.Button(window, text="Cancel")
+
+#adding widgets into the grid
+text_widget.grid(column=0, row=0, columnspan=3, rowspan=2)
+namelbl.grid(column=3, row=0, columnspan=2)
+name.grid(column=3, row=1, columnspan=2)
+one.grid(column=0, row=3)
+two.grid(column=1, row=3)
+three.grid(column=2, row=3)
+ok.grid(column=3, row=3)
+cancel.grid(column=4, row=3)
+
+window.mainloop()
 ```
 
