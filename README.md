@@ -12,6 +12,7 @@ Zápisky a materiály k výuce.
 5. Pygame: [základy moduly pygame](pygame/README.md)
 6. PyInstaller: [tvorba spustitelných souborů](pyinstaller/README.md)
 7. tkinter: [tvorba grafického uživatelského rozhraní v okně (GUI)](tkinter/README.md)
+8. tkinter: [druhá část tkinteru](tkinter/README.md)
 
 ## Osnova kurzu 2019/2020
 

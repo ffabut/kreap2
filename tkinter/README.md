@@ -632,7 +632,7 @@ window.rowconfigure([0,1,2], weight=1, minsize=50)
 
 Zejména při zvětšení okna, ale i jindy se může stát, že bude widget menší než buňka, v níž je usazen.
 Geometry manager `grid` v takovém případě umístí widget do středu buňky.
-Toto chování ale můžeme pozměnit pomocí parametru `sticky`, který přijímá následující možnosti:
+Toto chování ale můžeme pozměnit pomocí parametru `sticky` (podobný parametru `fill` u metody `pack()`), který přijímá následující možnosti:
 - sticky="n" - widget bude umístěn severně - nahoru buňky
 - sticky="e" - widget bude umístěn východně - doprava buňky
 - sticky="s" - widget bude umístěn jižně - ve spodek buňky
@@ -670,4 +670,142 @@ button4.grid(column=2, row=2, padx=20, pady=20, sticky="nw")
 window.mainloop()
 ```
 
+## Interakce
+
+### Metoda bind()
+
+Metoda `bind()` umožňuje svázat zmáčknutí klávesy, či kliknutí na widget (např. button) s námi definovanou funkcí.
+
+#### Reakce na zmáčknutí klávesy na klávesnici
+
+Chceme-li reagovat na zmáčknutí tlačítka, použijeme metodu `bind()` na objektu okna naší aplikace.
+Prvním parametrem metody je event, na který chceme reagovat, dostupné například jsou:
+- `<Key>` - libovolná klávesa na klávesnici
+- `<Button-1>` - levé tlačítko myši
+- `<Button-2>` - prostřední tlačítko myši
+- `<Button-3>` - pravé tlačítko myši
+- `<ButtonRelease-1>` - tlačítko 1 bylo uvolněno (můžeme použít i tlašítko 2 a 3). Aktuální pozice myši je poskytována v atributech x a y v události zaslaného volané funkci.
+- `<Double-Button-1>` - na Tlačítko 1 bylo dvojkliknuto (můžeme použít i tlačítko 2 a 3). Jako prefixy můžete použít Double nebo Triple.
+- `<Enter>` - ukazatel myši vstoupil na widget (tato událost neznamená, že uživatelka stiskla Enter !).
+- `<Leave>` - ukazatel myši opustil widget.
+- `<FocusIn>` - tento widget (nebo jeho potomek) získal klávesnicový focus. (De facto že okno bylo označeno a je aktivním oknem, ne na pozadí někde.)
+- `<FocusOut>` - focus byl přesunut z tohoto widgetu na jiný. (Bylo označeno jiné okno, náš program ztratil focus a je někde na pozadí.)
+- `<MouseWheel>` - uživatelka rolovala kolečkem myši. Směr posunu je poskytnut v atributu `delta` události, předávané volané funkci. (Nefunguje na Linuxu, tam je potřeba použít `<Button-4>` (up) a `<Button-5>` (down).)
+- `<Configure>` - změna velikosti widgetu/okna, nejčastěji při resizu okna.
+- `w`, `1`, `!` - můžeme definovat i přímo konkrétní znak.
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+
+def handle_keypress(event):
+  print(event.char)
+
+def handle_w(event):
+  print("tlacitko w bylo zmacknuto!")
+
+def handle_wheel(event):
+  if event.num == 4:
+      print("linux mouse up")
+  elif event.num == 5:
+      print("linux mouse down")
+  else:
+      print("pohyb kolecka o:", event.delta)
+
+window.bind("<Key>", handle_keypress)
+window.bind("<MouseWheel>", handle_wheel)
+window.bind("<Button-4>", handle_wheel)
+window.bind("<Button-5>", handle_wheel)
+window.bind("w", handle_w)
+
+window.mainloop()
+```
+
+#### Reakce na kliknutí na button
+
+Metodu `bind()` můžeme zavolat na objektu button, poté bude zavolána patřičná funkce ve chvíli, kdy je zmáčknuté tlačítko:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+
+def handle_click(event):
+    print("The button was clicked!")
+
+button = tk.Button(window, text="Click me!")
+button.pack()
+
+#<Button-1> je mouse left button
+button.bind("<Button-1>", handle_click)
+
+window.mainloop()
+```
+
+#### Atributy datového typy event
+
+- event.widget: widget, který vyvolalo událost. Toto je platná instance tkinterovského udělátka. Při tisku ovšem získáte přes metodu __str__ pouze jeho jméno. Při porovnávání se však použije daná instance. Tento atribut se nastavuje u všech událostí.
+- event.x, event.y: současná pozice myši, je v pixelech.
+- event.x_root, event.y_root - současná pozice myši relativně k hornímu levému rohu obrazovky, je v pixelech.
+- event.char - kód znaku, pouze u klávesnicových událostí, datový typ `str`.
+- event.keysym - konkrétní symbol klávesy, jen u klávesnicových událostí.
+- event.keycode - kód klávesy, jen u klávesnicových událostí.
+- event.num - číslo tlačítka, jen u myších událostí.
+- event.width, event.height - nová velikost widgetu, v pixelech jen u Configure událostí.
+- event.type - typ události.
+
+Z důvodu kompatibility je lepší se držet char, height, width, x, y, x_root, y_root a widget.
+
+### Parametr command
+
+Alternativou k používání metody `bind()`, je vytvoření widgetu s parametrem `command`, skrz který specifikujeme funkci, která bude zavolána.
+Malá ukázka programu:
+
+```python
+import tkinter as tk
+
+def increase():
+    value = int(lbl_value["text"])
+    lbl_value["text"] = f"{value + 1}"
+
+def decrease():
+    value = int(lbl_value["text"])
+    lbl_value["text"] = f"{value - 1}"
+
+window = tk.Tk()
+
+window.rowconfigure(0, minsize=50, weight=1)
+window.columnconfigure([0, 1, 2], minsize=50, weight=1)
+
+btn_decrease = tk.Button(master=window, text="-", command=decrease)
+btn_decrease.grid(row=0, column=0, sticky="nsew")
+
+lbl_value = tk.Label(master=window, text="0")
+lbl_value.grid(row=0, column=1)
+
+btn_increase = tk.Button(master=window, text="+", command=increase)
+btn_increase.grid(row=0, column=2, sticky="nsew")
+
+window.mainloop()
+```
+
+## Vyskakovací okna
+
+Někdy je potřeba uživatelky informovat o vzniklé situaci, k tomu můžeme použít vyskakovací okna.
+Před použitím musíme importovat sub-modul messagebox, dál je to již velmi jednoduché:
+
+```python
+import tkinter as tk
+from tkinter import messagebox
+
+window = tk.Tk()
+
+#prvni parametr: nazev okna, druhy parametr: zprava zobrazena v okne
+messagebox.showerror("Error", "Error message")
+messagebox.showwarning("Warning", "Warning message")
+messagebox.showinfo("Information", "Informative message")
+
+window.mainloop()
+```
 
