@@ -74,7 +74,8 @@ window = tkinter.Tk()
 label_widget = tkinter.Label(
   window,
   text="Toto je text label")
-label_widget.pack() #funkce pack() promítne widget do okna
+label_widget.pack() #funkce pack() umístí widget do okna
+#pozice bude určena automaticky, pro přesné umístění můžeme použít metodu grid()
 
 window.mainloop()
 ```
@@ -336,28 +337,191 @@ window.config(menu=menu_widget)
 window.mainloop()
 ```
 
-## Kompozice widgetů: widget.grid()
+## Kompozice widgetů - geometry managers: .pack(), place(), grid()
 
-Abychom měli rozmístění widgetů v okně pod kontrolou, můžeme využít metodu widgetů `grid()`.
-Pokud chceme nějaký widget umístit na specifické místo v rámci okna, můžeme tuto pozici specifikovat pomocí metody `grid()`:
+Pro určení umístění jednotlivých widgetů slouží v tkinteru tzv. geometry managers, jsou jimi: `pack()`, `place()` a `grid()`.
+Nyní se na ně podíváme podrobněji.
+
+### Pack()
+
+V našich ukázkách jsme zatím používali package manager `pack()`, který je schopný do jisté míry určovat umístění automaticky za nás.
+Manager `pack()` v základu umisťuje widgety pod sebe, dává jim co nejmenší výšku i šířku a automaticky je centruje:
 
 ```python
+import tkinter as tk
+
+window = tk.Tk()
+window.geometry('800x600')
+
+frame1 = tk.Frame(master=window, width=100, height=100, bg="red")
+frame1.pack()
+
+frame2 = tk.Frame(master=window, width=50, height=50, bg="yellow")
+frame2.pack()
+
+frame3 = tk.Frame(master=window, width=25, height=25, bg="blue")
+frame3.pack()
+
+window.mainloop()
+```
+
+#### Fill: Roztáhnutí widgetu
+
+Občas se nám ale může hodit, aby se prvky roztáhnuly po celé výšce nebo šířce okna.
+K tomu slouží parametr `fill` metody `pack()`, pomocí kterého můžeme specifikovat, aby se daný widget roztáhnul na šířku, výšku nebo v obou směrech.
+Parametr fill můžeme specifikovat se třemi různými konstantami:
+- tk.X - roztažení dle osy x, tedy horizontálně
+- tk.Y - roztažení dle osy y, tedy vertikálně
+- tk.BOTH - pro roztažení v obou osách
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+window.geometry('800x600')
+
+# width nehraje roli, jelikoz tuto hodnotu prepise pack() diky fill=tk.X
+frame1 = tk.Frame(master=window, height=100, bg="red") 
+frame1.pack(fill=tk.X)
+
+frame2 = tk.Frame(master=window, height=50, bg="yellow")
+frame2.pack(fill=tk.X)
+
+frame3 = tk.Frame(master=window, height=25, bg="blue")
+frame3.pack(fill=tk.X)
+
+window.mainloop()
+```
+
+#### Side: směr řazení widgetů
+
+V základu `pack()` řadí widgety shora dolů.
+Tento směr můžeme přepsat pomocí parametru `side` a následujících konstant:
+- `tk.TOP` - defaultní, shora dolů
+- `tk.BOTTOM` - odpoda nahoru
+- `tk.LEFT` - zleva doprava
+- `tk.RIGHT` - zprava doleva
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+window.geometry('800x600')
+
+frame1 = tk.Frame(master=window, width=200, height=100, bg="red")
+frame1.pack(fill=tk.Y, side=tk.LEFT) #radime zleva doprava, prvek se roztahne vertikalne
+
+frame2 = tk.Frame(master=window, width=100, bg="yellow")
+frame2.pack(fill=tk.Y, side=tk.LEFT)
+
+frame3 = tk.Frame(master=window, width=50, bg="blue")
+frame3.pack(fill=tk.Y, side=tk.LEFT)
+
+window.mainloop()
+```
+
+#### Expand: roztažení prvků při zvětšení okna
+
+V `pack()` můžeme specifikovat parametr `expand` (by default: expand=False), který zajistí, že se prvky roztáhnout při zvětšení okna.
+Můžeme tak zajistit to, že prvky vždy zaplní celé okno, že se přizpůsobí:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+window.geometry('800x600')
+
+frame1 = tk.Frame(master=window, width=200, height=100, bg="red")
+frame1.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+
+frame2 = tk.Frame(master=window, width=100, bg="yellow")
+frame2.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+
+frame3 = tk.Frame(master=window, width=50, bg="blue")
+frame3.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+
+window.mainloop()
+```
+
+### Place()
+
+Geometry manager `place()` umožňuje umístit widget na konkrétní souřadnici X a Y.
+Souřadnicový systém začíná v levém horním rohu - souřadnice x=0,y=0.
+Osa x je horizontální, tedy doprava roste číslo/souřadnice x.
+Osa y je vertikální, tedy směrem dolů roste číslo/souřadnice y.
+Hodnota x a y souřadnic představuje pixely (nejde třeba o milimetry, a není odvozena od velikosti písma).
+
+Geometry managery můžeme kombinovat:
+Použití je jednoduché:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+window.geometry("800x600")
+
+frame = tk.Frame(window, width=150, height=150, bg="green")
+frame.pack()
+
+label1 = tk.Label(window, text="I'm at (0, 0)", bg="red")
+label1.place(x=0, y=0)
+
+label2 = tk.Label(window, text="I'm at (400, 75)", bg="yellow")
+label2.place(x=400, y=75)
+
+window.mainloop()
+```
+
+### Grid()
+
+Třetí možností je geometry manager `grid()`, který je častou volbou, jelikož nám pomůže se vyvarovat nedostatků `pack()` (záleží na pořadí, v jakém widgety přidáme) a `place()` (nedokáže reagovat na změnu velikosti okna).
+Grid nám nabízí lepší kontrolu nad umístěním a její lepší škálovatelnost, lehčí upravování.
+
+Pomocí metody `grid()` umísťujeme prvky do gridu/mřížky - do konkrétního sloupce a řádku.
+Máme tedy představu o kompozici prvků a přitom nejsme vázáni na pořadí, v jakém prvky vkládáme, ani na naprosto přesné souřadnice.
+Jde o obecnější, ale čitelný popis toho, jak prvky umístit, například:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+
+button1 = tk.Button(window, text="okay", bg="green")
+button2 = tk.Button(window, text="okay", bg="red")
+button3 = tk.Button(window, text="okay", bg="yellow")
+button4 = tk.Button(window, text="okay", bg="blue")
+
 button1.grid(column=0, row=0)
 button2.grid(column=1, row=0)
 button3.grid(column=1, row=1)
 button4.grid(column=2, row=2)
+
+window.mainloop()
 ```
+
+#### Více řádků/sloupců: rowspan, columnspan
 
 Může se nám stát, že budeme chtít nějaký prvek umístit přes více řádků či sloupců gridu, pak můžeme v metodě `grid()` použít parametry `rowspan=` a `columnspan=`:
 
 ```python
+import tkinter as tk
+
+window = tk.Tk()
+
+button1 = tk.Button(window, text="okay", bg="green")
+button2 = tk.Button(window, text="okay", bg="red")
+button3 = tk.Button(window, text="okay", bg="yellow")
+button4 = tk.Button(window, text="okay", bg="blue")
+
 button1.grid(column=0, row=0, rowspan=2)
 button2.grid(column=1, row=0)
 button3.grid(column=1, row=1, columnspan=2)
 button4.grid(column=2, row=2)
+
+window.mainloop()
 ```
 
-Větší ukázku můžeme vidět zde:
+Větší ukázku použití můžeme vidět zde:
 
 ```python
 import tkinter
@@ -398,4 +562,112 @@ cancel.grid(column=4, row=3)
 
 window.mainloop()
 ```
+
+#### Odsazení/padding: parametry padx, pady
+
+Pokud bychom chtěli dát prvkům nějaký prostor kolem nich, můžeme k tomu využít parametry `padx` a `pady` metody `grid()`.
+S jejich pomocí můžeme nadefinovat, kolik pixelů horizontálně a vertikálně má být kolem widgetu prázdných - aby se na něj nelepily další widgety.
+Použití je následující:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+
+button1 = tk.Button(window, text="okay", bg="green")
+button2 = tk.Button(window, text="okay", bg="red")
+button3 = tk.Button(window, text="okay", bg="yellow")
+button4 = tk.Button(window, text="okay", bg="blue")
+
+button1.grid(column=0, row=0, padx=20, pady=20)
+button2.grid(column=1, row=0, padx=20, pady=20)
+button3.grid(column=1, row=1, padx=20, pady=20)
+button4.grid(column=2, row=2, padx=20, pady=20)
+
+window.mainloop()
+```
+
+#### Přizpůsobení gridu zvětšenému oknu
+
+Aby se grid přizpůsobil změnám velikosti okna, musíme na objektu window zavolat metodu `columnconfigure()` a `rowconfigure()`, pomocí kterých nastavíme chování sloupců a řádků při zvětšení okna.
+První parametr metod určuje index řádku či sloupce, který chceme konfigurovat.
+Pojmenovaným parametrem `weight` určujeme, jak moc daný řádek/sloupec bude růst (relativně k ostatním řádkům/sloupcům) při zvětšení okna (defaultní hodnota = 0, tj. neroste).
+Pojmenovaným parametrem `minsize` můžeme určit minimální výšku řádku či šířku sloupce.
+Příklad:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+
+button1 = tk.Button(window, text="okay", bg="green")
+button2 = tk.Button(window, text="okay", bg="red")
+button3 = tk.Button(window, text="okay", bg="yellow")
+button4 = tk.Button(window, text="okay", bg="blue")
+
+window.columnconfigure(0, weight=1, minsize=75)
+window.columnconfigure(1, weight=2, minsize=75) #poroste 2x rychleji než ostatní sloupce
+window.columnconfigure(2, weight=1, minsize=75)
+
+window.rowconfigure(0, weight=1, minsize=50)
+window.rowconfigure(1, weight=2, minsize=50) #poroste 2x rychleji nez prvni radek, a 3x pomaleji nez treti radek
+window.rowconfigure(2, weight=6, minsize=50) #poroste 3x rychleji než druhy radek, a 6x rychleji nez prvni radek
+
+button1.grid(column=0, row=0)
+button2.grid(column=1, row=0)
+button3.grid(column=1, row=1)
+button4.grid(column=2, row=2)
+
+window.mainloop()
+```
+
+Metody `columnconfigure()` a `rowconfigure()` můžeme volat nejen s jedním indexem, ale také se seznamem indexů sloupců/řádků, které konfigurujeme, například:
+
+```python
+window.columnconfigure([0,1,2], weight=1, minsize=75)
+window.rowconfigure([0,1,2], weight=1, minsize=50)
+```
+
+#### Usazení widgetu v buňce gridu: parametr sticky
+
+Zejména při zvětšení okna, ale i jindy se může stát, že bude widget menší než buňka, v níž je usazen.
+Geometry manager `grid` v takovém případě umístí widget do středu buňky.
+Toto chování ale můžeme pozměnit pomocí parametru `sticky`, který přijímá následující možnosti:
+- sticky="n" - widget bude umístěn severně - nahoru buňky
+- sticky="e" - widget bude umístěn východně - doprava buňky
+- sticky="s" - widget bude umístěn jižně - ve spodek buňky
+- sticky="w" - widget bude umístěn západně - nalevo buňky
+
+Tyto orientace můžeme také kombinovat, například:
+- sticky="ne" - widget bude umístěn severovýchodně, tedy do pravého horního rohu buňky
+- sticky="sw" - widget bude umístěn jihozápadně, tedy do levého spodního rohu buňky
+
+Speciálním případem je umístění do protichůdných směrů - toto umístění prvek roztáhne na ploše buňky:
+- sticky="ns" - prvek bude roztažen od jihu na sever, tedy vertikálně, na výšku buňky
+- sticky="we" - prvek bude roztažen od západu na východ, tedy horizontálně, na šířku buňky
+- sticky="nswe" - prvek bude roztažen do všech směrů, tedy na celou plochu buňky
+
+Ukázka:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+
+button1 = tk.Button(window, text="okay", bg="green")
+button2 = tk.Button(window, text="okay", bg="red")
+button3 = tk.Button(window, text="okay", bg="yellow")
+button4 = tk.Button(window, text="okay", bg="blue")
+
+window.columnconfigure([0,1,2], weight=1, minsize=75)
+window.rowconfigure([0,1,2], weight=1, minsize=50)
+
+button1.grid(column=0, row=0, padx=20, pady=20, sticky="nsew")
+button2.grid(column=1, row=0, padx=20, pady=20, sticky="we")
+button3.grid(column=1, row=1, padx=20, pady=20, sticky="w")
+button4.grid(column=2, row=2, padx=20, pady=20, sticky="nw")
+
+window.mainloop()
+```
+
 
