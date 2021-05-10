@@ -13,6 +13,8 @@ Zápisky a materiály k výuce.
 6. PyInstaller: [tvorba spustitelných souborů](pyinstaller/README.md)
 7. tkinter: [tvorba grafického uživatelského rozhraní v okně (GUI)](tkinter/README.md)
 8. tkinter: [druhá část tkinteru](tkinter/README.md)
+9. Tornado: [Tornado web server 1](2/README.md), [Tornado 2](3/README.md), samostatně případně: [3](4/README.md) a [4](5/README.md)
+10. Automatizace systému: [práce se složkami, spouštění programů, klikání myší a klávesnicí](system/README.md)
 
 ## Osnova kurzu 2019/2020
 
