@@ -1,5 +1,5 @@
-from selenium import webdriver #ridi vytvoreni okna, ustredni modul
-import time #pro sleep
+from selenium import webdriver
+import time
 
 
 #CHROME
@@ -18,16 +18,20 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install())) #vyt
 #driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 
 
-driver.implicitly_wait(10)
+driver.get("https://www.idnes.cz")
+time.sleep(1)
 
-driver.get("https://www.artalk.cz") #nacteme URL
-time.sleep(1) #spanek pro lepsi citelnost procesu (ci maskovani se za realneho cloveka)
+current_url = driver.current_url
+title = driver.title
+print(f"We are on URL '{current_url}' and title of this page is: {title}.")
 
-elem = driver.find_element(by="id", value="search-text") #vyhledame element podle ID, kterou ma search field na artalku nastaveny na "search-text"
+driver.get("https://www.favu.vut.cz")
+time.sleep(1)
 
-elem.send_keys("Miloš Zeman") #do elementu posleme text - jako by uzivatel*ka skutecne psal*a
-time.sleep(1) 
-elem.send_keys("\n") #posilame enter pro odeslani hledani
+current_url = driver.current_url
+title = driver.title
 
-time.sleep(10) #zde cekame, abychom si mohly*i prohlednout vysledky
+print(f"We are on URL '{current_url}' and title of this page is: {title}.")
+
+
 driver.close()

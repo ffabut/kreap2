@@ -1,6 +1,7 @@
-from selenium import webdriver #ridi vytvoreni okna, ustredni modul
-import time #pro sleep
-
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 #CHROME
 from selenium.webdriver.chrome.service import Service
@@ -17,17 +18,14 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install())) #vyt
 #from webdriver_manager.microsoft import EdgeChromiumDriverManager
 #driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 
+driver.get("https://seznam.cz")
 
-driver.implicitly_wait(10)
+wait = WebDriverWait(driver, timeout=30)
+element = wait.until(EC.presence_of_element_located((By.TAG_NAME, "p")))
+print("ELEMENT BY TAG NAME:", element)
 
-driver.get("https://www.artalk.cz") #nacteme URL
-time.sleep(1) #spanek pro lepsi citelnost procesu (ci maskovani se za realneho cloveka)
 
-elem = driver.find_element(by="id", value="search-text") #vyhledame element podle ID, kterou ma search field na artalku nastaveny na "search-text"
+element = wait.until(EC.presence_of_element_located((By.ID, "non-existing-id"))) #zde si pockame... az nakonec bude error - element na strance neexistuje
+print("ELEMENT BY ID:", element)
 
-elem.send_keys("Miloš Zeman") #do elementu posleme text - jako by uzivatel*ka skutecne psal*a
-time.sleep(1) 
-elem.send_keys("\n") #posilame enter pro odeslani hledani
-
-time.sleep(10) #zde cekame, abychom si mohly*i prohlednout vysledky
 driver.close()
