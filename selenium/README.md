@@ -363,3 +363,7 @@ Pomocí metody `getAttribute()` můžeme získat hodnoty HTML atributu daného e
 ```python
 link_url = driver.findElement(By.ID, "muj-link").getAttribute('href')
 ```
+
+## Low-level interakce
+
+Velmi podrobná a jemná interakce je možná skrze Actions API, jejíž dokumentace je dostupná na: https://www.selenium.dev/documentation/webdriver/actions_api/
