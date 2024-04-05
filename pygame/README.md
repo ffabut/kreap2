@@ -353,3 +353,17 @@ Pro ukázku se podívejte na ukázkový skript [movement-example.py](movement-ex
 - [pygame.joystick](https://www.pygame.org/docs/ref/joystick.html)
 - [pygame.cursors](https://www.pygame.org/docs/ref/cursors.html)
 - [pygame.midi](https://www.pygame.org/docs/ref/midi.html)
+
+## Buttons
+
+Pygame defaultně nenabízí žádný připravený objekt pro tlačítka, ale můžeme si je vytvořit sami, byť je to trochu kódu navíc.
+Pro ukázku je k dispozici skript [buttons-example.py](buttons-example.py).
+
+Klíčové ale je, že můžeme využít `pygame.Rect()` k vytvoření obdélníkové zóny. Na této zóně potom můžeme volat metodu `.collidepoint(x,y)`.
+Ve zkratce:
+
+```python
+button_rect = pygame.Rect(125, 125, 150, 50)  # vytvorime obdelnikovou zonu button_rect
+if button_rect.collidepoint(pygame.mouse.get_pos()): # na zone button_rect muzeme kontrolovat kolizi, v tomto pripade bereme pozici mysi - pro hover effect
+  pygame.draw.rect(button_surface, (127, 255, 212), (1, 1, 148, 48)) # udelame nejakou akci.
+```
