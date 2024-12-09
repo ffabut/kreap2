@@ -10,8 +10,6 @@ screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption('Clickable Button')
 
 
-
-
 button_surface = pygame.Surface((150, 50))
 button_rect = pygame.Rect(125, 125, 150, 50)  # Adjust the position as needed
 

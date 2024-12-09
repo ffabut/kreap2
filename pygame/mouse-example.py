@@ -15,13 +15,12 @@ while running:
       running = False
 
   x, y = pygame.mouse.get_pos()
-  print(x,y)
 
   # nastaveni bileho pozadi okna
-  screen.fill((255, 255, 255))
+  #screen.fill((255, 255, 255))
 
   # vykreslime modry kruh
-  pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
+  pygame.draw.circle(screen, (0, 0, 255), (x, y), 2)
 
   # update vykresleni obrazovky
   pygame.display.flip()

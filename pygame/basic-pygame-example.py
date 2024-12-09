@@ -2,26 +2,28 @@ import pygame
 
 pygame.init()
 
-flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE
-screen = pygame.display.set_mode([600, 400], flags)
+import random
+
+
+screen = pygame.display.set_mode([600, 400])
 
 running = True
 
-# nekonecny loop, v nemz se odehrava aktualizace hry
-while running:
 
-  # zde kontrolujeme herni eventy - konkretne zmacknuti tlacitka close
+i = 0
+while running:
+  i = i + 1
+  if i > 255:
+    i = 0
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       running = False
 
-  # nastaveni bileho pozadi okna
-  screen.fill((255, 255, 255))
+  #screen.fill((255, 255, 255))
+  a = random.randint(0, 600)
+  b = random.randint(0, 400)
+  pygame.draw.circle(screen, (i, i, 255), (a, b), 10)
 
-  # vykreslime modry kruh
-  pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
-
-  # update vykresleni obrazovky
   pygame.display.flip()
 
 

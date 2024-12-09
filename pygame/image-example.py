@@ -17,8 +17,10 @@ while running:
   # nastaveni bileho pozadi okna
   screen.fill((255, 255, 255))
 
+  pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
+
   img = pygame.image.load("favulife.jpg")
-  screen.blit(img, (50, 50))
+  screen.blit(img, (0, 0))
 
   pygame.display.flip()
 

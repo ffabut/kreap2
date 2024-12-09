@@ -16,7 +16,6 @@ by = 20
 
 # nekonecny loop, v nemz se odehrava aktualizace hry
 while running:
-
   # zde kontrolujeme herni eventy - konkretne zmacknuti tlacitka close
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
