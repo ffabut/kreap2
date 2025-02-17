@@ -8,10 +8,16 @@ Zápisky a materiály k výuce.
 - [webový server](webserver/README.md)
 - [databáze](databaze/README.md)
 - [data mining](data-mining/README.md)
-- [databáze](databaze/README.md)
-- [databáze](databaze/README.md)
+- [self-hosting](self-hosting/README.md)
+- [GUI - tkinter](tkinter/README.md)
+- [pygame](pygame/README.md)
+- [pyinstaller](pyinstaller/README.md)
+- [regularni vyrazy](regularni-vyrazy/README.md)
+- [selenium](selenium/README.md) - automatizace prohlížeče (testování, data-mining, boti)
 - [git](git/README.md)
+- [system](system/README.md) - interakce se systémem, automatizace OS
 - [artificial intelligence](artificial-intelligence/README.md)
+
 
 ## Osnova kurzy 2020/2021
 
