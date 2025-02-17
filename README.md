@@ -3,17 +3,27 @@
 Předmět Kreativní programování 2 (letní semestr) na FaVU VUT v Brně.
 Zápisky a materiály k výuce.
 
+## Obsah repozitáře
+
+- [webový server](webserver/README.md)
+- [databáze](databaze/README.md)
+- [data mining](data-mining/README.md)
+- [databáze](databaze/README.md)
+- [databáze](databaze/README.md)
+- [git](git/README.md)
+- [artificial intelligence](artificial-intelligence/README.md)
+
 ## Osnova kurzy 2020/2021
 
 1. Úvod do kurzu
 2. Data-mining: [Requests - stáhnutí HTML souboru, BeautifulSoup4 - vyhledání elementu v HTML](7/README.md)
-3. Regulární výrazy: [regulární výrazy obecně, regulární výrazy v pythonu - modul re](9/README.md)
-4. Databáze: [jazyk SQL, jednoduchá databáze v Pythonu pomocí SQLite](6/README.md)
+3. Regulární výrazy: [regulární výrazy obecně, regulární výrazy v pythonu - modul re](regularni-vyrazy/README.md)
+4. Databáze: [jazyk SQL, jednoduchá databáze v Pythonu pomocí SQLite](databaze/README.md)
 5. Pygame: [základy moduly pygame](pygame/README.md)
 6. PyInstaller: [tvorba spustitelných souborů](pyinstaller/README.md)
 7. tkinter: [tvorba grafického uživatelského rozhraní v okně (GUI)](tkinter/README.md)
 8. tkinter: [druhá část tkinteru](tkinter/README.md)
-9. Tornado: [Tornado web server 1](2/README.md), [Tornado 2](3/README.md), samostatně případně: [3](4/README.md) a [4](5/README.md)
+9. Tornado: [Tornado web server 1](webserver/README.md), [Tornado 2](webserver/tornado-templates.md), samostatně případně: [3](webserver/tornado-interactions.md) a [4](webserver/tornado-websockets.md)
 10. Automatizace systému: [práce se složkami, spouštění programů, klikání myší a klávesnicí](system/README.md)
 
 ## Osnova kurzu 2019/2020

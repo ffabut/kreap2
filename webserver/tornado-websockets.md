@@ -1,4 +1,4 @@
-# Lekce 5: Interakce skrze websockets v Tornadu
+# Interakce skrze websockets v Tornadu
 
 Websocket je protokol pro komunikaci mezi serverem a prohlížečem.
 Jeho hlavní výhodou je to, že je komunikace navázáná dlouhodobě - nové zprávy či požadavky tak může iniciovat jak prohlížeč (podobně jako při GET a POST requestech), ale především také server. 

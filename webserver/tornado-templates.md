@@ -1,4 +1,4 @@
-# Lekce 3: Templaty v Tornado Webserver
+# Templaty v Tornado Webserver
 
 ## Templates - jak generovat "pěknou" stránku
 

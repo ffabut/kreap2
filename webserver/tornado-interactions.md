@@ -1,4 +1,4 @@
-# Lekce 4: Interakce s uživatelkou
+# Interakce s uživatelkou
 
 Pokud chceme, aby náš web interagoval na uživatele a uživatelky, máme dvě základní možnosti:
 
