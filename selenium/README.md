@@ -4,11 +4,12 @@ Selenium je externí modul určený pro interakce s prohlížeči (podporované 
 Pomocí Selenia můžeme řídit prohlížeč - navigovat na různá URL, získávat informace o zobrazených HTML tags a také s nimi interagovat.
 Jelikož HTML není pouze staženo jako v případě Requests+BeautifulSoup4, ale přímo zobrazeno v prohlížeči, má Selenium několik výhod:
 
-1. na stránkách funguje JavaScript
-2. před webovým serverem vypadáme více jako "běžný\*á uživatel\*ka"
+1. na stránkách funguje JavaScript,
+2. před webovým serverem vypadáme více jako "běžný\*á uživatel\*ka",
 3. můžeme interagovat s prvky - klikat na tlačítka, vyplňovat formuláře atd.
    
-Selenium se obecně využívá pro testování webových stránek, pro naše účely nás však může zajímat též využití pro data-mining (např. login a projíždění timelines) či automatizování interakcí (boti, intervence do webů a platforem).
+Selenium se obecně využívá pro testování webových stránek.
+Pro naše účely nás však může zajímat též využití pro data-mining (např. login a projíždění timelines) či automatizování interakcí (boti, intervence do webů a platforem).
 
 ## Instalace
 
@@ -120,24 +121,39 @@ driver.close()
 
 ## Waits - čekání na načtení prvku
 
+Ne všechny prvky na stránkách se načtou okamžitě, některé prvky se načtou skrze JS až dodatečně kvůli pomalejší síti, některé až po kliknutí, či po vyplnění formuláře.
+Při skriptování v Seleniu je tedy často potřeba čekat na načtení prvků.
+Máme několik možností, jak toho dosáhnout.
+
 ### time.sleep()
 
-Může nám pomoci počkat na donačtení některého z elementů.
-Také je praktický pro to, aby náš skript před stránkou vypadal pomaleji a tedy více jako reálná osoba (tomu můžeme pomoci také randomizací časů).
-Pokud nám však jde o efektivní čekání na načtení prvků, je Sleep spíš relativně primitivní řešení, Selenium nám nabízí řadu propracovanějších, které si ukážeme níže.
+Sleep je nejjednodušší způsob, jak počkat na donačtení některého z elementů.
+Prostě necháme náš skript na chvíli usnout a pak se pokračujeme (předpokládáme, že se prvek za dobu spánku už načetl).
+Sleep je taky praktický pro to, aby náš skript před stránkou vypadal pomaleji a tedy více jako reálná osoba (tomu můžeme pomoci také randomizací časů).
+
+Pokud nám ale jde hlavně o efektivní čekání na načtení prvků, je Sleep dost primitivní řešení - vždy čekáme daný čas, i když se prvek načte dřív.
+Selenium nám nabízí řadu propracovanějších, které si ukážeme níže.
 
 ### Implicit wait
 
-Pomocí metody `driver.implicitly_wait()` můžeme nastavit dobu, po kterou budou na načtení prvku čekat všechny funkce lokalizující elementy.
+Mnohem efektivnější a přitom stále jednoduché řešení čekání na načítání prvků je použít Implicit wait.
+Implicit wait nastavíme na začátku skriptu a všechny funkce lokalizující elementy (např. driver.find_element) pak budou čekat na načtení prvku po dobu, kterou jsme nastavili.
+Implicit wait nastavíme pomocí funkce `driver.implicitly_wait()`.
+
 Pozor: není dobré kombinovat Implicit a Explicit wait.
 
 ```python
 driver = Firefox()
-driver.implicitly_wait(10)
+driver.implicitly_wait(10) # nastavime implicitni cekani
 driver.get("http://somedomain/url_that_delays_loading")
-my_dynamic_element = driver.find_element(By.ID, "myDynamicElement")
+my_dynamic_element = driver.find_element(By.ID, "myDynamicElement") # cekame na lokalizaci prvku max. 10 sekund
 ```
+
 ### Explicit wait
+
+Explicit wait je více propracované řešení, které nám umožňuje čekat na načtení prvku po určitou dobu.
+Můžeme také nastavovat čekání na různé podmínky, např. na to, že se prvek načte, nebo na to, že se prvek stane klikatelným.
+Jde o více propracované řešení, které nám umožňuje čekat na různé podmínky různě dlouho a to na každém místě skriptu rozdílně, tedy vyladit výkon skriptu na konkrétní situace.
 
 ```python
 from selenium import webdriver
@@ -173,7 +189,24 @@ print("ELEMENT BY ID:", element)
 driver.close()
 ```
 
+#### expected_conditions
+
+Modul `expected_conditions` obsahuje mnoho propracovaných funkcí, které nám umožňují čekat na různé podmínky.
+Některé z těch praktičtěji používaných:
+
+`expected_conditions.presence_of_element_located()`: počká, až je prvek načten do DOM.
+`expected_conditions.visibility_of_element_located()`: počká, až je prvek načten do DOM a stane se viditelným, např. když chceme udělat screenshot.
+`expected_conditions.element_to_be_clickable()`: počká, až je prvek klikatelný.
+`expected_conditions.invisibility_of_element_located()`: počká, až se prvek stane neviditelným.
+`expected_conditions.text_to_be_present_in_element()`: počká, až se v textu prvku objeví zadaný text.
+
+Plná dokumentace je dostupná na: https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
+
 ### Fluent Wait
+
+Fluent wait je nejpropracovanější a nejflexibilnější způsob čekání na načtení prvků, de facto je to ale jen rozšíření Explicit wait (voláme WebDriverWait s dalšími parametry).
+Nastavíme timeout, po který budeme čekat, a pak nastavíme, jak často se má prohlížeč snažit prvek najít.
+Můžeme také nastavovat ignorované výjimky, např. ElementNotVisibleException, ElementNotSelectableException atd.
 
 ```python
 driver = Firefox()
@@ -356,7 +389,7 @@ Plná dokumentace dostupná na: https://www.selenium.dev/documentation/webdriver
 text = driver.find_element(By.CSS_SELECTOR, "h1").text
 ```
 
-### HTML Atribut
+### HTML Atribute
 
 Pomocí metody `getAttribute()` můžeme získat hodnoty HTML atributu daného elementu, například atributu `href`, který drží HTML odkaz, na který prvek odkazuje:
 
