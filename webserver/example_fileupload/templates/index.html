@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload Example</title>
+</head>
+<body>
+    <h1>File Upload Example</h1>
+
+    <a href="/upload">Upload a new file</a><br><br>
+
+    <h2>Uploaded Files</h2>
+    {% if images %}
+        {% for image in images %}
+            <div>
+                <img src="/uploads/{{ image }}" alt="{{ image }}" style="max-width:300px;"><br>
+                <small>{{ image }}</small>
+            </div>
+            <hr>
+        {% end %}
+    {% else %}
+        <p>No images uploaded yet.</p>
+    {% end %}
+</body>
+</html>
