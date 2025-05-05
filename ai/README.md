@@ -75,7 +75,7 @@ OPENAI_API_KEY="..." python ...
 
 ### Hello World
 
-```python 
+```python
 import os
 from openai import OpenAI
 
@@ -183,5 +183,44 @@ while True:
 
 ### Vystup ve formatu JSON
 
+Pydantic je knihovna pro validaci a serializaci dat.
+Kromě jiného umožňuje také generovat dokumentaci a JSON schema z datových struktur.
+
+Prvně musíme nainstalovat knihovnu:
+```bash
+pip install pydantic
+```
+
+A pak už můžeme použít:
+
+```python
+from pydantic import BaseModel
+from openai import OpenAI
+
+client = OpenAI()
+
+class GenVibes(BaseModel):
+    Boomers: str
+    GenX: str
+    Millennials: str
+    GenZ: str
+
+liked_music = input("Which music do you like?")
+
+completion = client.beta.chat.completions.parse(
+    model="gpt-4.5-nano",
+    messages=[
+        {
+            "role": "system",
+            "content": "You are a funny musical psychologist. Based on the user's answer, you return their analysis in JSON format."},
+        {
+            "role": "user",
+            "content": liked_music},
+    ],
+    response_format=GenVibes,
+)
+
+event = completion.choices[0].message.parsed
+```
 
 
