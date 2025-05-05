@@ -16,7 +16,7 @@ Zápisky a materiály k výuce.
 - [selenium](selenium/README.md) - automatizace prohlížeče (testování, data-mining, boti)
 - [git](git/README.md)
 - [system](system/README.md) - interakce se systémem, automatizace OS
-- [artificial intelligence](artificial-intelligence/README.md)
+- [artificial intelligence](ai/README.md)
 
 
 ## Osnova kurzy 2020/2021
