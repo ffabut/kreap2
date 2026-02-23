@@ -3,8 +3,11 @@
 Předmět Kreativní programování 2 (letní semestr) na FaVU VUT v Brně.
 Zápisky a materiály k výuce.
 
+Set-ExecutionPolicy RemoteSigned
+
 ## Obsah repozitáře
 
+- [instalace externích modulů](instalace/README.md)
 - [webový server](webserver/README.md)
 - [databáze](databaze/README.md)
 - [data mining](data-mining/README.md)
