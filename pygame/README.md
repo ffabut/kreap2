@@ -118,6 +118,42 @@ pygame.quit()
 Draw loop / nekonečný cyklus while je celkem praktický koncept pro všechny situace, kdy chceme během běhu programu průběžněš reagovat vstup dat nějakým výstupem a to tak dlouho, dokud program uživatelka nezavře.
 Použili jsme ho již v prvním semestru, když jsme si ukazovali možnosti cyklu while.
 
+#### Omezení FPS draw loopu
+
+Python samozřejmě bude provádět while loop co nejrychleji.
+(Co kdybysme přeci zpracovávalyi nějaká potřebná data?!)
+
+Pokud na jednu iteraci, resp. jeden frame, navážeme pohyb objektů, pak bude naše hra různě rychlá na rozdílných počítačích.
+To je prapůvodní řešení opravdu prvních her, které byly dělané na konkrétní stroj a na nových modelech byly rychlejší...
+
+Řešením je omezit počet iterací cyklu while, tedy počet vykreslených frameů za sekundu, tzv. FPS (frames per second):
+```python
+clock = pygame.time.Clock()
+while not done:
+    clock.tick(framerate=30)
+```
+
+Příépadně nechat while loop co nejrychleji - mít co největší FPS, ale detekovat čas od posledního vykreslení a tomu podřídit rychlost pohybu objektů.
+Pokud frame trval krátko, pak musíme pohnout objekty pouze trochu, pokud frame trval dlouho, pak musíme pohnout objekty více, aby se nám hra nezdála pomalá.
+
+K tomu můžeme použít návratovou hodnotu funkce tick(), navíc ji můžeme volat bez framerate argumentu, který limituje FPS.
+Funkce tick() nám vrátí čas v milisekundách od posledního volání funkce tick() a my můžeme tento čas použít pro výpočet rychlosti pohybu objektů:
+```python
+clock = pygame.time.Clock()
+while not done:
+    delta_time = clock.tick(framerate=0)
+```
+
+Případně také můžeme použít funkci pygame.time.get_ticks() pro získání času v milisekundách od spuštění hry (volání pygame.init()) a použít tento čas.
+
+```python
+current_time = pygame.time.get_ticks()
+while not done:
+    now = pygame.time.get_ticks()
+    delta_time = now - current_time
+    current_time = now
+```
+
 #### Vykreslení pozadí a objektu
 
 Abychom každý frame začali s čistou plochou, je dobré na začátku iterace vykreslit pozadí jednou barvou.
@@ -249,10 +285,14 @@ pygame.image.save(screen, "screenshot.jpg") # ukládáme
 
 ### Zvuk
 
-Pro přehrávání hudby můžeme použít modul `pygame.mixer.music`.
+Pro přehrávání zvuků můžeme použít moduly:
+- `pygame.mixer` (https://www.pygame.org/docs/ref/mixer.html)
+- `pygame.mixer.music` (https://www.pygame.org/docs/ref/music.html#module-pygame.mixer.music)
+
+Modul mixer je doporučován na kratší zvuky, jelikož načítá zvukový soubor kompletně do operační paměti, podporuje přehrávání více stop současně.
+Modul music je naopak doporučován pro delší skladby, jelikož streamuje zvukový soubor postupně po částech z disku, podporuje přehrávání pouze jedné stopy zároveň.
 
 Jednoduchý příklad:
-
 ```python
 pygame.mixer.music.load("music.mp3")
 pygame.mixer.music.play(-1) # -1 skladba bude přehrána v loopu
@@ -347,12 +387,15 @@ Jednou z jednoduchých možností je napojit pozici objektu na interakci ze stra
 Pro ukázku se podívejte na ukázkový skript [movement-example.py](movement-example.py).
 
 
-### Další pěkné moduly pygame
+### Další zajímavé moduly pygame
 
 - [pygame.camera](https://www.pygame.org/docs/ref/camera.html)
 - [pygame.joystick](https://www.pygame.org/docs/ref/joystick.html)
 - [pygame.cursors](https://www.pygame.org/docs/ref/cursors.html)
 - [pygame.midi](https://www.pygame.org/docs/ref/midi.html)
+
+K experimentování se taky může hodit modul `pygame.cursors`, který nám umožňuje měnit kurzor myši:
+https://www.pygame.org/docs/ref/cursors.html#pygame.cursors.compile
 
 ## Buttons
 
