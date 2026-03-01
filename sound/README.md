@@ -7,6 +7,44 @@ Z udržovaných a multiplatformních knihoven můžeme doporučit například ty
 - Playsound3 - https://github.com/szmikler/playsound3
 - Miniaudio - https://github.com/irmen/pyminiaudio
 
+### Playsound3
+
+Playsound3 je opravdu velmi jednoduchá a efektivní knihovna pro přehrávání zvuku.
+Playsound3 podporuje pouze přehrávání a to formátů wav a mp3 - další formáty jsou závislé na platformě a použitém zvukovém backendu.
+Nahrávání zvuků není podporováno.
+Pro instalaci: `pip install playsound3`.
+
+```python
+from playsound3 import playsound
+
+# přehrávání z disku by default blokuje
+playsound("samples/piano_loop.wav") # můžeme nahradit URL!
+
+# pro neblokující přehrávání použijeme argument block=False
+sound = playsound("samples/piano_loop.wav", block=False)
+
+# můžeme zkontrolovat, jestli se zvuk stále přehrává
+if sound.is_alive():
+    print("Sound is still playing!")
+
+# kdykoliv můžeme přehrávání zastavit
+sound.stop()
+# pripadne bysme taky mohlyi pockat skrze sound.wait()
+```
+
+#### Zjištění dostupných backendů
+
+Playsound3 používá pro přehrávání zvuku různé backendy v závislosti na platformě a dostupnosti knihoven.
+Pro zjištění, které backendy jsou dostupné na našem systému, můžeme použít následující kód:
+
+```python
+from playsound3 import AVAILABLE_BACKENDS, DEFAULT_BACKEND
+
+print(AVAILABLE_BACKENDS)  # for example: ["gstreamer", "ffmpeg", ...]
+print(DEFAULT_BACKEND)  # for example: "gstreamer"
+```
+
+
 ### Miniaudio
 
 Podporuje přehrávání wav, flac, vorbis a mp3.
@@ -47,7 +85,7 @@ print("Closing the playback device manually...")
 device.close() # bez with..as musíme device manuálně zavřít
 ```
 
-### Informace o zařízeních
+#### Informace o zařízeních
 
 Knihovna nám umožňuje zobrazit informace o dostupných přehrávacích a nahrávacích zařízeních:
 
@@ -92,7 +130,7 @@ input("Enter to stop playback...")
 device.close()
 ```
 
-### Nahrávání zvuku z mikrofonu
+#### Nahrávání zvuku z mikrofonu
 
 Pro nahrávání zvuku z mikrofonu můžeme použít `miniaudio.CaptureDevice()` a jeho metodu `start()`.
 Metodě `start()` musíme předat generator, který bude zpracovávat nahrávané PCM data.
