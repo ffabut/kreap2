@@ -12,6 +12,8 @@ Z udržovaných a multiplatformních knihoven můžeme doporučit například ty
 Podporuje přehrávání wav, flac, vorbis a mp3.
 Umožňuje také nahrávání zvuku z mikrofonu.
 
+Jednoduchý příklad přehrávání zvuku pomocí miniaudio vypadá takto:
+
 ```python
 import miniaudio
 
@@ -23,10 +25,79 @@ print(f"Loading file: {info}")
 stream = miniaudio.stream_file("samples/piano_loop.wav")
 
 # vytvoření přehrávacího zařízení - volbu necháváme na defaults miniaudio
+# mělo by do vzít aktuálně používané zařízení v OS
 with miniaudio.PlaybackDevice() as device:
     device.start(stream) # spustíme non-blocking přehrávání
     input("Audio file playing in the background. Enter to stop playback: ") # čekáme na vstup od uživatele, jinak by skriptu skončil a přehrávání by se zastavilo
 ```
+
+Samozřejmě device nemusíme otevírat skrze `with .. as ..`, ale pak musíme dbát na zavření device:
+
+```python
+import miniaudio
+
+stream = miniaudio.stream_file("samples/piano_loop.wav")
+
+# otevření device bez with..as - nezapomenout na konci zavřit!
+device = miniaudio.PlaybackDevice()
+device.start(stream) # spustíme non-blocking přehrávání
+input("Audio file playing in the background. Enter to stop playback: ")
+
+print("Closing the playback device manually...")
+device.close() # bez with..as musíme device manuálně zavřít
+```
+
+### Informace o zařízeních
+
+Knihovna nám umožňuje zobrazit informace o dostupných přehrávacích a nahrávacích zařízeních:
+
+```python
+import miniaudio
+
+devices = miniaudio.Devices()
+playbacks = devices.get_playbacks()
+captures = devices.get_captures()
+
+print("Playback devices:")
+for playback in playbacks:
+    print(f"- {playback}")
+
+print("\nCapture devices:")
+for capture in captures:
+    print(f"- {capture}")
+```
+
+Což později můžeme využít pro výběr konkrétního zařízení pro přehrávání nebo nahrávání, například takto:
+
+```python
+import miniaudio
+
+devices = miniaudio.Devices()
+playbacks = devices.get_playbacks()
+
+for x, device in enumerate(playbacks):
+    print(f"{x}: {device['name']} (id: {device['id']})")
+
+x = int(input("Choose playback device number: "))
+chosen_device = playbacks[x]
+chosen_id = chosen_device["id"]
+print(f"Chosen device: {chosen_device['name']} (id: {chosen_id})")
+
+device = miniaudio.PlaybackDevice(device_id = chosen_id)
+
+stream = miniaudio.stream_file("samples/piano_loop.wav")
+device.start(stream)
+input("Enter to stop playback...")
+
+device.close()
+```
+
+### Nahrávání zvuku z mikrofonu
+
+Pro nahrávání zvuku z mikrofonu můžeme použít `miniaudio.CaptureDevice()` a jeho metodu `start()`.
+Metodě `start()` musíme předat generator, který bude zpracovávat nahrávané PCM data.
+
+Celý example mužeme najít v souboru [miniaudio_recording.py](miniaudio_recording.py).
 
 ## Audio manipulation 
 
