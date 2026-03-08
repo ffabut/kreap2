@@ -14,7 +14,8 @@ class UploadHandler(tornado.web.RequestHandler):
         title = self.get_body_argument("title", default="Untitled")
         description = self.get_body_argument("description", default="")
 
-        # Get file
+        # Get first file
+        # there could be multiple files if <input> has "multiple" attribute (https://www.w3schools.com/tags/att_input_multiple.asp)
         fileinfo = self.request.files.get("file")[0]
         filename = fileinfo["filename"]
         file_body = fileinfo["body"]
