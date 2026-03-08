@@ -140,14 +140,20 @@ Celý example mužeme najít v souboru [miniaudio_recording.py](miniaudio_record
 
 
 ## Sound processing in real time
+### Pedalboard
+Pokud chceme v reálnem čase efektovat zvuk, je ideálním řešením knihovna [Pedalboard](https://github.com/spotify/pedalboard) od Spotify.
+Je možné ji použít jak pro přímé zpraování živého vstupu do efektů a živého výstupu, tak pro zpracování zvukových souborů.
 
-https://github.com/spotify/pedalboard
-
+Instalace jednoduchá:
+```
 pip install pedalboard
+```
 
-
-
-
+Ukázky použití v souborech:
+- [pedalboard_hello.py](pedalboard_hello.py)
+- [pedalboard_file2speakers.py](pedalboard_file2speakers.py)
+- [pedalboard_mic2speakers.py](pedalboard_mic2speakers.py)
+- [pedalboard_reversed_reverb.py](pedalboard_reversed_reverb.py)
 
 ## Další knihovny pro práci se zvukem 
 
