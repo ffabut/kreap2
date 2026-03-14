@@ -22,6 +22,13 @@ Set-ExecutionPolicy RemoteSigned
 - [artificial intelligence](ai/README.md)
 
 
+## Osnova kurzy 2025/2026
+
+1. Úvod do kurzu, stahování z webu a parsování HTML (data-mining) - [Requests - stáhnutí HTML souboru, BeautifulSoup4 - vyhledání elementu v HTML](data-mining/README.md)
+2. PyGame - základy modulu pygame - [pygame](pygame/README.md)
+3. Zvuk - moduly pro jednoduché přehrávání zvuku, nahrávání zvuku, efektování v pedalboard - [sound](sound/README.md)
+4. Efektování zvuku - modul pedalboard, obracení zvuku, reverzní reverb - [sound](sound/README.md)
+
 ## Osnova kurzy 2020/2021
 
 1. Úvod do kurzu
