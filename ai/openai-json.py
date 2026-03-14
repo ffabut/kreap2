@@ -10,27 +10,15 @@ class GenVibes(BaseModel):
             "description": "A model that captures user vibes according to different generations."
         }
     }
-
-    Boomer: Annotated[float, Field(
-        description="How probably the user is a Boomer. [0, 1]"
-    )]
-    GenX: Annotated[float, Field(
-        description="How probably the user is a Gen X. [0, 1]"
-    )]
-    Millennial: Annotated[float, Field(
-        description="How probably the user is a Millennial. [0, 1]"
-    )]
-    GenZ: Annotated[float, Field(
-        description="How probably the user is a Gen Z. [0, 1]"
-    )]
-    Alpha: Annotated[float, Field(
-        description="How probably the user is a Alpha. [0, 1]"
-    )]
+    Boomer: Annotated[float, Field(description="How probably the user is a Boomer. [0, 1]")]
+    GenX: Annotated[float, Field(description="How probably the user is a Gen X. [0, 1]")]
+    Millennial: Annotated[float, Field(description="How probably the user is a Millennial. [0, 1]")]
+    GenZ: Annotated[float, Field(description="How probably the user is a Gen Z. [0, 1]")]
+    Alpha: Annotated[float, Field(description="How probably the user is a Generation Alpha. [0, 1]")]
 
 print(GenVibes.model_json_schema(), "\n\n")
 
 liked_music = input("Which music do you like?")
-
 completion = client.beta.chat.completions.parse(
     model="gpt-4.1-nano",
     messages=[
@@ -56,6 +44,13 @@ print(f"Gen X: {vibes.GenX:.2f}")
 print(f"Millennial: {vibes.Millennial:.2f}")
 print(f"Gen Z: {vibes.GenZ:.2f}")
 print(f"Alpha: {vibes.Alpha:.2f}")
+
+# As we have JSON
+if vibes.Boomer > 0.5:
+    exit("Tento program není určen pro boomery. Končíme.")
+
+
+print("Vítejte v neboomerské části programu!")
 
 # Also print the JSON representation
 print("\nJSON representation:")
