@@ -18,8 +18,6 @@ Mezi nejpopulárnější patří:
 - Ollama (https://github.com/ollama/ollama-python) - přímá komunikaci s lokálními open-source LLM skrze program Ollama
 - (( Groq (https://github.com/groq/groq-python-sdk) # pozor Muskuv fasismus! ))
 
-Pokud by nějaký poskytovatel neměl API kompatibilní s openai formátem, dá se pro konverzi použít tzv. "LLM proxy" - např. https://github.com/BerriAI/litellm, které se dokáže připojit na řadu rozdílných služeb s různými formáty API a přeložit je, zpřístupnit pod openai formátem.
-
 Pro nalezení populárních (a nejspíš dobře fungujících modelů) lze navštívit např. https://openrouter.ai/rankings.
 
 ## Doplňkové služby
@@ -76,7 +74,7 @@ OPENAI_API_KEY="sk-abcd..." python main.py
 #### Doporučení
 
 1. Nepřidávejme API klíče do kódu - stačí pak zapomenout, dát push do našeho public repozitáře a nějaký scrapper si je vytáhne.
-2. Pokud používáme .env, dát tento file do .gitignore.
+2. Pokud používáme [.env file a dotenv modul](https://github.com/theskumar/python-dotenv), což je asi nejvíce safe možnost, tak musíme dát .env do .gitignore.
 3. Pokud děláme server - nepousílejme API klíče klientům, ideálně volejme LLM ze serveru a do browseru posílejme jen výsledek.
 
 ### Hello World
@@ -148,7 +146,6 @@ completion = client.chat.completions.create(
 print(completion.choices[0].message.content)
 ```
 
-
 ### Historie chatu
 
 ```python
@@ -194,7 +191,6 @@ while True:
 ```
 
 
-
 ### Vystup ve formatu JSON
 
 Pydantic je knihovna pro validaci a serializaci dat.
@@ -236,6 +232,29 @@ completion = client.beta.chat.completions.parse(
 
 event = completion.choices[0].message.parsed
 ```
+
+
+## Ollama API
+
+Ollama je program pro lokální spouštění LLM, který je velmi uživatelsky přátelský - instaluje se jako běžný program a nabízí GUI pro chat i instalaci modelů.
+Stáhnout Ollamu pro Windows, MacOS i Linux můžeme z: https://ollama.com/download.
+
+Jakmile mame nainstalovano, muzeme pokracovat s:
+1. V terminalu zadame prikaz: `ollama run gemma3` - pripadne jiny model z https://ollama.com/search
+2. Pokud model neni stazen, model se zacne stahovat,
+3. Pote uvidime `>>> Send a message (/? for help)` a muzeme zacit chatovat.
+
+Ollama nabizi vlastni knihovnu https://github.com/ollama/ollama-python, ktera umoznuje primo z Pythonu [listovat dostupne modely, pullovat nove, pushovat, atd](https://github.com/ollama/ollama-python?tab=readme-ov-file#api).
+Soucasne s tim ale Ollama podporuje take openai API, takze muzeme vyuzivat nam uz znamy openai module - na toto pouziti se zamerime, protoze nase skripty pak budou univerzalnejsi.
+Snaze se nam bude prepinat mezi Ollama, OpenAI, DeepSeek a jinymi poskytovateli.
+Pokud to jde, je lepsi pouzivat univerzalnejsi reseni nez ta limitovana na jeden use case.
+
+### Hello Ollama
+
+Oproti beznemu vyuziti openai knihovny je potreba pri vytvareni clienta specifikovat base_url - vetsinou 'http://localhost:11434/v1/', naopak client_key nemusime resit, staci pouzit jakykoliv neprazdny retezec.
+Musime take pouzit model, ktery mame lokalne dostupny - tedy pokud migrujeme z openAI nebo DeepSeek, musime ve volanich client.chat.completions.create() zmenit parametr model.
+
+Jednoduchy priklad najdete v souboru: [openai_to_ollama_simple.py](openai_to_ollama_simple.py).
 
 ## Credits
 
