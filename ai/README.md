@@ -3,16 +3,22 @@
 Tento dokument je zatím hodně orientovaná spíše na textové LLM.
 
 ## API knihovny
-Většina poskytovatelů AI služeb má API knihovny pro Python.
+
+Většina poskytovatelů LLM má jejich programatické (API) rozhraní kompatibilní s modulem "openai", který se stal faktickým standardem.
+- OpenAI (https://github.com/openai/openai-python)
+
 Volba té které knihovny je tedy odvislá od toho, čí služby chceme používat (často z důvodu ceny), respektive jaký model chceme použít.
 
 Mezi nejpopulárnější patří:
-- OpenAI (https://github.com/openai/openai-python)
+
 - Anthropic (https://github.com/anthropics/anthropic-sdk-python)
 - Gemini (https://github.com/googleapis/python-genai)
-- Groq (https://github.com/groq/groq-python-sdk)
-- Deepseek (kompatibilní s openai knihovnou)
-- Ollama (https://github.com/ollama/ollama-python) - open source, umožňuje rozjet open-source modely lokálně na vlastním stroji.
+- Deepseek (primo kompatibilní s openai knihovnou)
+- Qwen (primo kompatibilní s openai knihovnou)
+- Ollama (https://github.com/ollama/ollama-python) - přímá komunikaci s lokálními open-source LLM skrze program Ollama
+- (( Groq (https://github.com/groq/groq-python-sdk) # pozor Muskuv fasismus! ))
+
+Pokud by nějaký poskytovatel neměl API kompatibilní s openai formátem, dá se pro konverzi použít tzv. "LLM proxy" - např. https://github.com/BerriAI/litellm, které se dokáže připojit na řadu rozdílných služeb s různými formáty API a přeložit je, zpřístupnit pod openai formátem.
 
 Pro nalezení populárních (a nejspíš dobře fungujících modelů) lze navštívit např. https://openrouter.ai/rankings.
 
@@ -233,4 +239,4 @@ event = completion.choices[0].message.parsed
 
 ## Credits
 
-Autor serigrafie v souboru `image.png` je Joseph Wilson, [dílo bylo zveřejněno](https://www.europeana.eu/en/item/91619/SMVK_EM_objekt_1090129) Etnografiska museet pod licencí CC BY.  
+Autor serigrafie v souboru `image.png` je Joseph Wilson, [dílo bylo zveřejněno](https://www.europeana.eu/en/item/91619/SMVK_EM_objekt_1090129) Etnografiska museet pod licencí CC BY.
