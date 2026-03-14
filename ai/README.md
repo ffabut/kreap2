@@ -115,23 +115,31 @@ client = OpenAI()
 with open("image.png", "rb") as image_file:
     b64_image = base64.b64encode(image_file.read()).decode("utf-8")
 
-response = client.responses.create(
+completion = client.chat.completions.create(
     model="gpt-4.1-nano",
-    # input muze byt take seznam obsaujici historii jednotlivych zprav
-    # LLM reaguje na posledni zpravu uzivatele
-    input=[
+    messages=[
         {
             "role": "user",
             # v content posilame nejen text, ale i obrazek
             "content": [
-                {"type": "input_text", "text": "You see a picture of conceptual artwork. What is it about?"},
-                {"type": "input_image", "image_url": f"data:image/png;base64,{b64_image}"},
+                {
+                    "type": "text",
+                    "text": "You see a picture of conceptual artwork. What is it about?",
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{b64_image}"
+                        # nebo taky muzeme poslat public URL
+                        # "url": "https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png"
+                    },
+                },
             ],
         }
     ],
 )
 
-print(response.output_text)
+print(completion.choices[0].message.content)
 ```
 
 
@@ -223,4 +231,6 @@ completion = client.beta.chat.completions.parse(
 event = completion.choices[0].message.parsed
 ```
 
+## Credits
 
+Autor serigrafie v souboru `image.png` je Joseph Wilson, [dílo bylo zveřejněno](https://www.europeana.eu/en/item/91619/SMVK_EM_objekt_1090129) Etnografiska museet pod licencí CC BY.  

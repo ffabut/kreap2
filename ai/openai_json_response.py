@@ -33,10 +33,12 @@ completion = client.chat.completions.parse(
     messages=[
         {
             "role": "system",
-            "content": "You are a funny musical psychologist. Based on the user's answer, you return their analysis in JSON format."},
+            "content": "You are a funny musical psychologist. Based on the user's answer, you return their analysis in JSON format."
+        },
         {
             "role": "user",
-            "content": liked_music},
+            "content": liked_music
+        },
     ],
     response_format=GenVibes,
 )
