@@ -57,14 +57,14 @@ Ten můžeme získat na:
 - https://platform.openai.com/settings/profile/api-keys
 - https://platform.openai.com/settings/organization/api-keys
 
-Klíč poté nastavujeme jako proměnnou prostředí:
+Klíč poté nastavujeme jako [proměnnou prostředí](https://en.wikipedia.org/wiki/Environment_variable):
 ```bash
-export OPENAI_API_KEY="..."
+export OPENAI_API_KEY="sk-abcd..."
 ```
 
 případně pouze pro jednotlivé volání pythonu:
 ```bash
-OPENAI_API_KEY="..." python ...
+OPENAI_API_KEY="sk-abcd..." python main.py
 ```
 
 #### Doporučení
