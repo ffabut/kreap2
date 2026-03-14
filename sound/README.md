@@ -171,9 +171,13 @@ https://github.com/bastibe/python-soundfile
 
 ## CREDITS
 
-piano_loops.wav is a sound [Piano loops 200 octave short loop 120 bpm](https://freesound.org/people/josefpres/sounds/841765/) by [Josef Pres](https://freesound.org/people/josefpres/)
+piano_loops.wav is a sound [Piano loops 200 octave short loop 120 bpm](https://freesound.org/people/josefpres/sounds/841765/)
+by [Josef Pres](https://freesound.org/people/josefpres/)
 
-kick.wav is a sound [
-Kick - Proper Bottom.wav](https://freesound.org/people/TechGeekMusic/sounds/353396/) by [TechGeekMusic](https://freesound.org/people/TechGeekMusic/)
+kick.wav is a sound [Kick - Proper Bottom.wav](https://freesound.org/people/TechGeekMusic/sounds/353396/)
+by [TechGeekMusic](https://freesound.org/people/TechGeekMusic/)
+
+voice.mp3 is a sound [Shoutout Twice Female Voice](https://freesound.org/people/miradeshazer/sounds/382759/)
+by [miradeshazer](https://freesound.org/people/miradeshazer/)
 
 Thank you all!
