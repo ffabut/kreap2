@@ -1,3 +1,12 @@
+"""
+How to configure LLM to answer in a pre-defined JSON format.
+This is sometimes called "structured output" - https://developers.openai.com/api/docs/guides/structured-outputs/.
+
+1. Using pydantic module we define the expected JSON format of the answer.
+2. We use response_format to inform model about the expected format we want to receive.
+3. Parse the response into the pydantic model and use it in our code.
+"""
+
 from typing import Annotated
 from pydantic import BaseModel, Field
 from openai import OpenAI
@@ -19,7 +28,7 @@ class GenVibes(BaseModel):
 print(GenVibes.model_json_schema(), "\n\n")
 
 liked_music = input("Which music do you like?")
-completion = client.beta.chat.completions.parse(
+completion = client.chat.completions.parse(
     model="gpt-4.1-nano",
     messages=[
         {
