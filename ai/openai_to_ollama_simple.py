@@ -20,12 +20,12 @@ client = OpenAI(
 )
 
 chat_completion = client.chat.completions.create(
+    model=MODEL,
     messages=[
         {
             'role': 'user',
             'content': 'Say this is a test',
         }
     ],
-    model=MODEL,
 )
 print(chat_completion.choices[0].message.content)
