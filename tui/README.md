@@ -18,6 +18,9 @@ Zdroje k Textual:
 - https://mathspp.com/blog/textual-for-beginners
 - https://realpython.com/python-textual/
 
+Awesome apps made in Textual:
+- https://oleksis.github.io/awesome-textualize-projects/
+
 ### Instalace
 Pozor, pro používání stačí nainstalovat textual, ale pro vývoj appek i textual-dev, takže instalujeme 2 package:
 ```
