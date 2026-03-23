@@ -123,6 +123,58 @@ class MyApp(App):
         yield Header()
 ```
 
+Pro live reloading TCSS potom musime spustit nasi aplikaci ne primo skrze `python main.py`, ale pres textual CLI:
+
+```
+textual run --dev main.py
+```
+
+### Textual Dev CLI
+
+Pokud jsme nainstalovali krome modulu textual i textual-dev skrz `pip install textual-dev`, pak mame dostupny prikaz textual v prikazove radce.
+
+Textual dev CLI nam mimo jine umoznuje interaktivne prozkoumat okraje, barvy, animace a eventy, viz help:
+
+```
+$> textual
+Usage: textual [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  borders   Explore the border styles available in Textual.
+  colors    Explore the design system.
+  console   Run the Textual Devtools console.
+  diagnose  Print information about the Textual environment.
+  easing    Explore the animation easing functions available in Textual.
+  keys      Show key events.
+  run       Run a Textual app.
+  serve     Run a local web server to serve the application.
+```
+
+`textual borders` - interaktivni prehled okraju
+`textual colors` - prehled barev
+`textual easing` - prehled animaci prechodu
+`keys` - prehled eventu
+
+#### Debugovaci console
+S textual dev muzeme rozbehnout bocni consoli, v niz vidime debug toho, co se deje v nasi hlavni textual aplikaci:
+
+1. v prvnim terminalu: `textual console`
+2. v druhem terminalu spustit nasi aplikaci: `textual run --dev main.py`
+3. appka se automaticky propoji s console a bude do ni posilat debug zpravy
+
+#### Textual jako web stranka
+
+textual CLI umoznuje take servovat nasi appku do prohlizece jako webovou stranku:
+
+```
+textual serve actions_bell.py
+```
+V prohlizeci pak otevreme http://localhost:8000.
+
 ### Compound Widget
 
 Obcas muzeme chtit opakovat urcitou skupiny widgetu spolecne - napriklad label a pod nim input field.
@@ -170,6 +222,49 @@ class MyApp(App):
 
 MyApp().run()
 ```
+
+### Akce
+
+Reakce na klavesy definujeme v promenne BINDINGS.
+Jde o seznam tupples s 2 az 3 hodnotami:
+1. tlacitko
+2. nazev akce - ta pote automaticky vola metodu action_nazevAkce()
+3. volitelne nazev akce ve footeru
+
+```python
+from textual.app import App
+from textual.widgets import Footer, Label
+
+class MyApp(App):
+  BINDINGS = [
+    ("b", "bell", "Ring"),
+    ("q", "quit", "Get me out of here!!!")
+    ]
+  # "b" je tlacitko triggeruji action
+  # "bell" je nazev action, automaticky vola funkci action_bell - action_ je apendovano implicitne!
+  # "Ring" je nazev akce zobrazeny ve Footeru, bez nazvu by akce nebyla zobrazena ve footeru
+
+  def compose(self):
+    yield Footer()
+
+  def action_bell(self):
+    """Automaticky volano pri akci ring. Pozor predpona action_ je pridana automaticky, implicitne."""
+    self.bell() # v klasickem terminalu by melo udelat zvuk...
+    self.mount(Label("Ring!"))
+
+  def action_quit(self):
+    """Akce quit automaticky implicitne pocita s tim, ze bude volat funkci s nazvem 'action_'+'quit'
+    neboli prave action_quit. """
+    exit()
+
+MyApp().run()
+```
+
+### Eventy
+
+Vice v [events_buttons.py](./events_buttons.py).
+
+
 
 
 https://textual.textualize.io/how-to/center-things/
