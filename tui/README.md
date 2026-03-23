@@ -10,6 +10,14 @@ https://github.com/bczsalba/pytermgui - už zastarává, support myši
 
 ## Textual
 
+Textual je popularni framework pro vytvareni UI v terminalu.
+Je kompatibilni s textovou knihovnou [Rich](https://github.com/textualize/rich), diky niz umoznuje efektivne formatovat a barvit text.
+
+Zdroje k Textual:
+- https://textual.textualize.io/how-to/center-things/
+- https://mathspp.com/blog/textual-for-beginners
+- https://realpython.com/python-textual/
+
 ### Instalace
 Pozor, pro používání stačí nainstalovat textual, ale pro vývoj appek i textual-dev, takže instalujeme 2 package:
 ```
@@ -265,6 +273,3 @@ MyApp().run()
 Vice v [events_buttons.py](./events_buttons.py).
 
 
-
-
-https://textual.textualize.io/how-to/center-things/
