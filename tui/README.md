@@ -275,6 +275,51 @@ MyApp().run()
 
 Vice v [events_buttons.py](./events_buttons.py).
 
+### Layout
+
+Layout v Textual definuji, jak budou widgety aranzovany v parent kontejneru.
+Plna dokomentace zde: https://textual.textualize.io/guide/layout/
+
+Textual nabizi Horizontal, Vertical a Grid layout.
+Grid umožňuje dělat kompozici do sloupců a řádků, elementy mohou přesahovat několik buněk.
+
+#### Docking
+
+Widget můžeme dockovat k hraně obrazovky - zůstane pak připoután k danému okraji a nebude se na něj vztahovat skrolování.
+Realizujeme pomocí tcss a atributu dock s hodnotami top/right/bottom/left:
+```
+dock: <EDGE>;
+```
+
+#### Layers
+
+Na screen definujeme pořadí vrstev a na jednotlivých widget pak přiřadíme k vrstvě:
+
+Screen {
+    align: center middle;
+    layers: below above;
+}
+
+#top_box {
+    layer: above;
+    background: darkcyan;
+}
+
+#low_box {
+    layer: below;
+    background: orange;
+    offset: 12 6;
+}
+
+#### Offsets
+
+Widgety můžeme posouvat relativně od jejich běžného umístění pomocí tcss atributu offset: x,y.
+Například:
+
+```
+offset: 20 20;
+```
+
 ### Workers
 
 Někdy z aplikace potřebujeme spustit operaci, která zabere delší čas, například načítání dat z webu apod.
