@@ -275,4 +275,51 @@ MyApp().run()
 
 Vice v [events_buttons.py](./events_buttons.py).
 
+### Workers
 
+Někdy z aplikace potřebujeme spustit operaci, která zabere delší čas, například načítání dat z webu apod.
+Po dobu této operace by ale naše UI bylo zablokováno a nereagovalo by na akce uživatelů, což by působilo nedobře jako lag/freeze.
+Abychom se mohli takové situaci vyhnout, nabízí nám Textual tzv. workers API, které umožňuje volat kód asynchronně.
+
+Metodu widgetu či Textual App můžeme pomocí dekorátoru `@work` z `from textual import work` změnit na neblokující metodu.
+Například:
+
+```python
+from textual import work
+
+@work(exclusive=True)    
+async def update_weather(self, city: str) -> None:
+  ...
+```
+
+alternativně také můžeme použít metodu `App.run_worker()` a zavolat tak metodu asynchronně jako workera:
+
+```python
+self.run_worker(self.update_weather(message.value), exclusive=True)
+```
+
+#### Weather.py - ukázkový program Workers API
+
+Dostupný v [workers_weather.py](workers_weather.py).
+
+#### detaily @work dekorátoru
+ 
+Dekorátor @work ma nekolik parametru, ktere muzeme vyuzit pro lazeni jeho fungovani:
+
+- name:str='' - A short string to identify the worker (in logs and debugging).
+- group:str='default' - A short string to identify a group of workers.
+- exit_on_error:bool=True - Exit the app if the worker raises an error. Set to False to suppress exceptions.
+- exclusive:bool=False - Cancel all workers in the same group.
+- description:str|None=None - Readable description of the worker for debugging purposes. By default, it uses a string representation of the decorated method and its arguments.
+- thread:bool=False - Mark the method as a thread worker.
+
+#### Stavy workera
+
+Textual používá několik stavů během života Workera, ty jsou relativně intuitivní:
+1. pending - worker čeká na vytvoření
+2. running - worker byl spuštěn
+3. cancelled - worker byl zrušen
+4. error - worker skončil chybou
+5. success - worker skončil správně
+
+![](workers_states.jpg)
