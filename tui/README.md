@@ -313,9 +313,11 @@ Dekorátor @work ma nekolik parametru, ktere muzeme vyuzit pro lazeni jeho fungo
 - description:str|None=None - Readable description of the worker for debugging purposes. By default, it uses a string representation of the decorated method and its arguments.
 - thread:bool=False - Mark the method as a thread worker.
 
+Plna dokumentace dekoratoru @work na: https://textual.textualize.io/api/work/
+
 #### Stavy workera
 
-Textual používá několik stavů během života Workera, ty jsou relativně intuitivní:
+Textual používá [několik stavů během života Workera](https://textual.textualize.io/api/worker/#textual.worker.WorkerState), ty jsou relativně intuitivní:
 1. pending - worker čeká na vytvoření
 2. running - worker byl spuštěn
 3. cancelled - worker byl zrušen
