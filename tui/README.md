@@ -271,6 +271,19 @@ class MyApp(App):
 MyApp().run()
 ```
 
+#### Akce z textu
+Akce se mohou spoustet take primo skrze text markup:
+
+```python
+Play the [@click=app.bell]bell[/]
+```
+pripadne cely closing tag:
+```python
+Play the [@click=app.bell]bell[/@click]
+```
+
+Dokumentace: https://textual.textualize.io/guide/content/#actions
+
 ### Eventy
 
 Vice v [events_buttons.py](./events_buttons.py).
