@@ -282,6 +282,8 @@ pripadne cely closing tag:
 Play the [@click=app.bell]bell[/@click]
 ```
 
+Dalsi namespace, na kterem je mozne volat metody je "screen" a "widget": https://textual.textualize.io/guide/actions/#namespaces
+
 Dokumentace: https://textual.textualize.io/guide/content/#actions
 
 ### Eventy
@@ -383,3 +385,73 @@ Textual používá [několik stavů během života Workera](https://textual.text
 5. success - worker skončil správně
 
 ![](workers_states.jpg)
+
+### Screens
+
+Textual nam umoznuje definovat vice Screens a prepinat mezi nimi.
+
+Jednotlive Screens definujeme v App v dict konstante SCREENS, nasledne mezi nimi muzeme prepinat napriklad skrze BINDINGS:
+```python
+class MyApp(App):
+  SCREENS = {
+    "welcome": WelcomeScreen,
+    "settings": SettingsScreen
+    }
+  BINDINGS = [
+    ("w", "push_screen('welcome')", "Welcome"),
+    ("s", "push_screen('settings')", "Settings")
+  ]
+```
+
+Textual udrzuje stack screens - vrstvi screens na sebe a pamatuje si poradi.
+Diky tomu muzeme soucasnou Screen odstranit pomoci `app.pop_screen()` a videt predchozi/spodnejsi Screen.
+Coz je vyhodne pro vytvareni popup windows, vrstveni apod.
+
+Jako popup window (potvrzeni apod.) se casto pouziva tzv. Modal - ten blokuje bindings a interakce se spodni vrstvou.
+
+```python
+from textual.screen import ModalScreen
+
+class QuitScreen(ModalScreen):
+  """Screen with a dialog to quit."""
+  
+  def compose(self) -> ComposeResult:    
+    yield Grid(
+      Label("Are you sure you want to quit?", id="question"),      
+      Button("Quit", variant="error", id="quit"),
+      Button("Cancel", variant="primary", id="cancel"),
+      id="dialog",  
+    )
+
+  def on_button_pressed(self, event: Button.Pressed) -> None:
+    if event.button.id == "quit":
+      self.app.exit()
+    else:
+      self.app.pop_screen()
+```
+
+#### Modes
+
+Stackovani Screens je super a prakticke, ale pokud bysme chteli mit vice pages, tak se to zacne komplikovat.
+Pokud bychom chteli mit opravdu 3 nezavisle obrazovky/pages, na kterych bysme mohli vytvaret nezavisle popups a pritom prepinat, pak by nam stack spis komplikoval zivot.
+
+Textual nabizi tzv. Modes, coz jsou vlastne nezavisle stranky, ktere maji sve vlastni nezavisle stacks of screens.
+Na prvni mode tak muzeme mit Screen a pres nej hozeny popup, prepneme do vedlejsiho mode, tam otevreme dalsi screen,
+vratime se k prvnimu a tam je stale puvodni popup.
+Zkratka diky modes muzeme mit vice stranek, ktere maji vlastni vrstveni Screens.
+
+![](modes.jpg)
+
+```python
+class MyApp(App):
+  BINDINGS = [
+    ("d", "switch_mode('dashboard')", "Dashboard"),  
+    ("s", "switch_mode('settings')", "Settings"),
+    ("h", "switch_mode('help')", "Help"),
+  ]
+  MODES = {
+    "dashboard": DashboardScreen,  
+    "settings": SettingsScreen,
+    "help": HelpScreen,
+  }
+```
