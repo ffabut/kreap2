@@ -8,10 +8,10 @@ Set-ExecutionPolicy RemoteSigned
 ## Obsah repozitáře
 
 - [instalace externích modulů](instalace/README.md)
-- [webový server](webserver/README.md)
 - [databáze](databaze/README.md)
 - [data mining](data-mining/README.md)
-- [self-hosting](self-hosting/README.md)
+- [webový server](webserver/README.md)
+- [web server - deployment](webserver_deployment/README.md)
 - [GUI - tkinter](tkinter/README.md)
 - [pygame](pygame/README.md)
 - [pyinstaller](pyinstaller/README.md)
