@@ -1,0 +1,147 @@
+---
+- name: Harden Debian-based system
+  hosts: all
+  become: true
+  become_method: sudo
+
+  vars:
+    users:
+      - name: andy # use the same username in your inventory.ini
+        public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIJfrk50h7W91q5rVM/LSGBRfW9MmrVVEchu5l0H6DAG andreas.gajdosik@gmail.com"
+      - name: somebody # maybe you want to add a friend or somebody? :)
+        public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIJfrk50h7W91q5rVM/LSGBRfW9MmrVVEchu5l0H6DAG andreas.gajdosik@gmail.com"
+    allowed_ssh_users: "{{ users | map(attribute='name') | list }}"
+    ssh_port: 22
+
+  tasks:
+    - name: Update and upgrade APT packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install and configure sudo
+      apt:
+        name: sudo
+        state: present
+
+    - name: Install essential security packages
+      apt:
+        name:
+          - ufw
+          - fail2ban
+          - unattended-upgrades
+          - apt-transport-https
+          - ca-certificates
+        state: present
+
+    - name: Ensure required groups exist
+      group:
+        name: "{{ item }}"
+        state: present
+        system: yes
+      loop:
+        - sudo
+        - docker
+
+    - name: Allow admin users to use sudo without password
+      copy:
+        dest: /etc/sudoers.d/90-admin-users
+        owner: root
+        group: root
+        mode: "0440"
+        validate: "visudo -cf %s"
+        content: |
+          {% for u in users %}
+          {{ u.name }} ALL=(ALL) NOPASSWD:ALL
+          {% endfor %}
+
+    - name: Create admin users (SSH key only)
+      user:
+        name: "{{ item.name }}"
+        groups:
+          - sudo
+          - docker
+        append: yes
+        shell: /bin/bash
+        state: present
+        home: "/home/{{ item.name }}"
+        move_home: yes
+        create_home: yes
+        password: "!"
+      loop: "{{ users }}"
+
+    - name: Add SSH keys for admin users
+      authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.public_key }}"
+        state: present
+        manage_dir: yes
+        path: "/home/{{ item.name }}/.ssh/authorized_keys"
+      loop: "{{ users }}"
+
+    - name: Enable UFW and allow SSH
+      ufw:
+        state: enabled
+        policy: deny
+        port: "{{ ssh_port }}"
+        proto: tcp
+        rule: allow
+
+    - name: Set default UFW policies
+      ufw:
+        direction: incoming
+        policy: deny
+
+    - name: Harden SSH configuration
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^{{ item.option }}'
+        line: '{{ item.option }} {{ item.value }}'
+        state: present
+        create: yes
+        backup: yes
+      loop:
+        - { option: 'PermitRootLogin', value: 'no' }
+        - { option: 'PasswordAuthentication', value: 'no' }
+        - { option: 'Protocol', value: '2' }
+        - { option: 'LoginGraceTime', value: '30' }
+        - { option: 'X11Forwarding', value: 'no' }
+        - { option: 'MaxAuthTries', value: '3' }
+        - { option: 'AllowUsers', value: '{{ allowed_ssh_users | join(" ") }}' }
+
+    - name: Restart SSH to apply changes
+      service:
+        name: ssh
+        state: restarted
+
+    - name: Configure sysctl parameters for security
+      sysctl:
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: present
+        sysctl_set: yes
+        reload: yes
+      loop:
+        - { key: 'net.ipv4.conf.all.send_redirects', value: '0' }
+        - { key: 'net.ipv4.conf.default.send_redirects', value: '0' }
+        - { key: 'net.ipv4.conf.all.accept_redirects', value: '0' }
+        - { key: 'net.ipv4.conf.default.accept_redirects', value: '0' }
+        - { key: 'net.ipv4.conf.all.accept_source_route', value: '0' }
+        - { key: 'net.ipv4.conf.default.accept_source_route', value: '0' }
+        - { key: 'net.ipv4.icmp_echo_ignore_broadcasts', value: '1' }
+        - { key: 'net.ipv4.icmp_ignore_bogus_error_responses', value: '1' }
+
+    - name: Ensure fail2ban is running
+      service:
+        name: fail2ban
+        state: started
+        enabled: true
+
+    - name: Enable unattended upgrades
+      copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Download-Upgradeable-Packages "1";
+          APT::Periodic::AutocleanInterval "7";
+          APT::Periodic::Unattended-Upgrade "1";
