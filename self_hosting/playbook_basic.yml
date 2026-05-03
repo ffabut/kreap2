@@ -1,0 +1,86 @@
+# 1. installs Docker
+# 2. configures Traefik reverse proxy
+# 3. deploy example service at whoami.{{domain}}
+---
+- name: Configure Debian system with Docker and Traefik reverse proxy
+  hosts: all
+  become: true
+  become_method: sudo
+
+  tasks:
+    - name: Update and upgrade APT packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install Docker and required packages
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+      
+    # Python modul Request je vyzadovan nize pouzitym ansible modulem community.docker.docker_container
+    - name: Install python module Requests
+      apt:
+        name: python3-requests
+        state: present
+        update_cache: yes
+
+    - name: Deploy Traefik container
+      community.docker.docker_container:
+        name: traefik
+        image: traefik:v3.6.12 # https://hub.docker.com/_/traefik/tags
+        # zjistil jsem, ze je nice explicitne zminit verzi, nikoliv :latest
+        # a taky si hned poznamenat link na releases kontejneru - staci kliknout a vidim, zda mam updatovat!
+        state: started
+        restart_policy: always
+        networks:
+          - name: bridge
+        ports:
+          - "80:80"
+          - "443:443"
+          - "8080:8080"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+          - traefik_volume:/var/lib/traefik
+        command: >
+          --providers.docker=true
+          --entrypoints.web.address=:80
+          --entrypoints.web.http.redirections.entrypoint.to=websecure
+          --entrypoints.web.http.redirections.entrypoint.scheme=https
+          --entrypoints.websecure.address=:443
+          --entrypoints.dashboard.address=:8080
+          --certificatesresolvers.myresolver.acme.email=andreas@gajdosik.org
+          --certificatesresolvers.myresolver.acme.storage=/var/lib/traefik/acme_http.json
+          --certificatesresolvers.myresolver.acme.httpchallenge=true
+          --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
+          --entryPoints.web.forwardedHeaders.insecure
+          --entryPoints.websecure.forwardedHeaders.insecure
+          --api.dashboard=true
+          --log.level=DEBUG
+          --accesslog=true
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.dashboard.rule: "Host(`traefik.{{domain}}`)"
+          traefik.http.routers.dashboard.entrypoints: "websecure"
+          traefik.http.routers.dashboard.tls.certresolver: "myresolver"
+          traefik.http.routers.dashboard.service: "api@internal"
+          traefik.http.routers.dashboard.middlewares: "basicAuthMe"
+          traefik.http.middlewares.basicAuthMe.basicauth.users: "aga:$2y$12$3M4YiwnQdlZNMBuoNF7fEOVtdQRs5E/6asGrbSjzZQUt1A5VNZhyO"
+          # to get the hashed username&password run: htpasswd -nbB username "password"
+
+    - name: Whoami
+      community.docker.docker_container:
+        name: whoami
+        image: "traefik/whoami"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.whoami.rule: "Host(`whoami.{{domain}}`)"
+          traefik.http.routers.whoami.entrypoints: "websecure"
+          traefik.http.routers.whoami.tls.certresolver: "myresolver"

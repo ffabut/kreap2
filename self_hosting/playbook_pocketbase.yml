@@ -1,0 +1,61 @@
+# Playbook to deploy PocketBase SQLite3 based backend with friendly API via just one executable file
+# https://pocketbase.io/
+---
+- name: Harden Debian-based system
+  hosts: all
+  become: true
+  become_method: sudo
+
+  tasks:
+    - name: Create required directories for containers
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop: # cyklus vytvori nasledujicich 6 slozek - jednotliva iterace je doplni vyse pod prommenou "item"
+        - /var/lib/pocketbase/pb1/data
+        - /var/lib/pocketbase/pb1/public
+        - /var/lib/pocketbase/pb1/hooks
+        - /var/lib/pocketbase/pb2/data
+        - /var/lib/pocketbase/pb2/public
+        - /var/lib/pocketbase/pb2/hooks
+
+    - name: Deploy PocketBase containers
+      community.docker.docker_container:
+        name: "{{ item.name }}"
+        image: ghcr.io/muchobien/pocketbase:0.37.5 #https://github.com/muchobien/pocketbase/pkgs/container/pocketbase
+        state: started
+        restart_policy: always
+        volumes: "{{ item.volumes }}"
+        labels: "{{ item.labels }}"
+      # tady lehka komplikace - pro ukazku cyklus pro deployment 2 oddelenych instanci
+      # prvky mame pojmenovane, takze misto pod prommennou "item"
+      # se volumes doplni vyse pod promennou "volumes" vyse, labels pod "labels"
+      loop:
+        - name: pocketBase1
+          # tady vyuzivame tzv. bind mounts - do kontejneru loadujeme predem pripravenou slozku na hostu
+          # predem jsme pripravili /var/lib/pocketbase/pb1/data a ted ji nastavime, aby byla v kontejneru dostupna pod /pb_data
+          # (alternativou jsou tzv. docker volumes, pak prvni cestu definujeme jednoslovne bez lomitka: pb1_data:/pb_data - docker pak slozku sam vytvori kdesi...)
+          volumes:
+            - /var/lib/pocketbase/pb1/data:/pb_data
+            - /var/lib/pocketbase/pb1/public:/pb_public
+            - /var/lib/pocketbase/pb1/hooks:/pb_hooks
+          labels:
+            traefik.enable: "true"
+            traefik.http.routers.pb1_lab_gajdosik_org.rule: "Host(`pb1.{{domain}}`)" # pozor - zalezi na promenne domain v inventory.ini
+            traefik.http.routers.pb1_lab_gajdosik_org.entrypoints: "websecure"
+            traefik.http.routers.pb1_lab_gajdosik_org.tls: "true"
+            traefik.http.routers.pb1_lab_gajdosik_org.tls.certresolver: "myresolver"
+            traefik.http.services.pb1_lab_gajdosik_org.loadbalancer.server.port: "8090"
+        - name: pocketBase2
+          volumes:
+            - /var/lib/pocketbase/pb2/data:/pb_data
+            - /var/lib/pocketbase/pb2/public:/pb_public
+            - /var/lib/pocketbase/pb2/hooks:/pb_hooks
+          labels:
+            traefik.enable: "true"
+            traefik.http.routers.pb2_lab_gajdosik_org.rule: "Host(`pb2.{{domain}}`)"
+            traefik.http.routers.pb2_lab_gajdosik_org.entrypoints: "websecure"
+            traefik.http.routers.pb2_lab_gajdosik_org.tls: "true"
+            traefik.http.routers.pb2_lab_gajdosik_org.tls.certresolver: "myresolver"
+            traefik.http.services.pb2_lab_gajdosik_org.loadbalancer.server.port: "8090"

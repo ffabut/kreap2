@@ -67,7 +67,7 @@
         home: "/home/{{ item.name }}"
         move_home: yes
         create_home: yes
-        password: "!"
+        password: "!" # nastavime prazdne heslo, takze nemusime pro sudo zadavat password - je to pro zjednoduseni Ansible skriptu, ale je to lehce anti-security
       loop: "{{ users }}"
 
     - name: Add SSH keys for admin users
